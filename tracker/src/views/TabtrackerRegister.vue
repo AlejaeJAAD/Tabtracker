@@ -74,8 +74,11 @@
                     email: this.email,
                     password: this.password
                     })
-                    this.$store.dispatch('setToken', response.data.token)
-                    this.$store.dispatch('setUser', response.data.user)
+                    const token = response.data.data.token
+                    const user = response.data.data.user
+                    console.log(response.data.data)
+                    this.$store.dispatch('setToken', token)
+                    this.$store.dispatch('setUser', user)
                     this.$router.push({
                     name: 'songs'
                     })

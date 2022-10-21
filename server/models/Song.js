@@ -1,17 +1,38 @@
-module.exports = (sequelize, DataTypes) => {
-    const Song = sequelize.define('Song', {
-      title: DataTypes.STRING,
-      artist: DataTypes.STRING,
-      genre: DataTypes.STRING,
-      album: DataTypes.STRING,
-      albumImageUrl: DataTypes.STRING,
-      youtubeId: DataTypes.STRING,
-      lyrics: DataTypes.TEXT,
-      tab: DataTypes.TEXT
-    })
-  
-    Song.associate = function (models) {
-    }
-  
-    return Song
-  }
+const mongoose = require('mongoose');
+
+const songSchema = mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  artist: {
+    type: String,
+    required: true
+  },
+  genre: {
+    type: String,
+    required: true
+  },
+  album: {
+    type: String,
+    required: true
+  },
+  albumImageUrl: {
+    type: String,
+    required: true
+  },
+  youtubeId: {
+    type: String,
+    required: true
+  },
+  lyrics: {
+    type: String,
+    required: true
+  },
+  tab: {
+    type: String,
+    required: true
+  },
+})
+
+module.exports = mongoose.model('Song', songSchema)

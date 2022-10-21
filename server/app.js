@@ -2,8 +2,18 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const {sequelize} = require('./models')
-const config = require('./config/config')
+const mongoose = require('mongoose');
+
+require('dotenv').config()
+
+// Conexión a Base de datos
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@tabtracker-cluster.jtmwcvd.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
+mongoose.connect(uri,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+)
+.then(() => console.log('Base de datos conectada'))
+.catch(e => console.log('error db:', e))
+
 
 const app = express()
 app.use(morgan('combined'))
@@ -17,8 +27,8 @@ const history = require('connect-history-api-fallback');
 app.use(history());
 app.use(express.static(__dirname + "/public"));
 
-sequelize.sync({force: false})
-  .then(() => {
-    app.listen(config.port)
-    console.log(`Server started on port ${config.port}`)
-  })
+// Iniciar server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Servidor iniciado en: ${PORT}`)
+})
