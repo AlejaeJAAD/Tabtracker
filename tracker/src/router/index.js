@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/components/Home.vue'
+import Home from '@/components/HelloWorld.vue'
 import Test from '@/views/Test.vue'
 import Tabtracker from '@/views/Tabtracker.vue'
 import TabtrackerRegister from '@/views/TabtrackerRegister.vue'
@@ -8,7 +8,7 @@ import TabtrackerLogin from '@/views/TabtrackerLogin.vue'
 import Songs from '@/views/Songs.vue'
 import CreateSong from '@/components/Songs/CreateSong.vue'
 import ViewSong from '@/components/Songs/ViewSong.vue'
-import SongEdit from '@/components/Songs/SongEdit.vue'
+import SongEdit from '@/components/Songs/EditSong.vue'
 import Landing from '@/views/Landing.vue'
 
 Vue.use(VueRouter)

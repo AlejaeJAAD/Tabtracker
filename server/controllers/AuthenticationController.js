@@ -20,7 +20,9 @@ const schemaLogin = Joi.object({
 
 function jwtSignUser (user) {
     const ONE_WEEK = 60 * 60 * 24 * 7
-    return jwt.sign(user, config.authentication.jwtSecret, {
+    return jwt.sign(user, 
+      //config.authentication.jwtSecret
+      process.env.TOKEN_SECRET, {
         expiresIn: ONE_WEEK
     })
 }
@@ -87,13 +89,7 @@ module.exports = {
           const token = jwtSignUser(userJson)
           res.header('auth-token', token).json({
             error: null,
-            data: {
-              user: 
-              {
-                email: userJson.email,
-              },
-              token
-            }
+            data: {token, userJson}
           })
           
         } catch (err) {

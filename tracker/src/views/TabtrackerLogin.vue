@@ -71,11 +71,12 @@
             async login () {
                 try {
                     const response = await AuthenticationService.login({
-                    email: this.email,
-                    password: this.password
+                        email: this.email,
+                        password: this.password
                     })
+                    console.log(response.data.data)
                     const token = response.data.data.token
-                    const user = response.data.data.user
+                    const user = response.data.data.userJson
                     this.$store.dispatch('setToken', token)
                     this.$store.dispatch('setUser', user)
                     this.$router.push({

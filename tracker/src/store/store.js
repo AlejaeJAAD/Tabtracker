@@ -6,7 +6,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   strict: true,
-  plugins: [createPersistedState()],
   state: {
     token: null,
     user: null,
@@ -30,13 +29,29 @@ export default new Vuex.Store({
   },
   actions: {
     setToken ({commit}, token) {
+      console.log(token)
       //console.log(state.isLoggedIn)
       commit('setToken', token)
     },
     setUser ({commit}, user) {
+      console.log(user)
       commit('setUser', user)
     }
   },
   modules: {
-  }
+  },
+  plugins: [createPersistedState({
+    paths: [
+      "home", 
+      "tabtracker", 
+      "tabtrackerregister", 
+      "tabtrackerregister", 
+      "songs",
+      "songs-create",
+      "view-song",
+      "song-edit",
+      "test",
+      "landing",
+    ]
+  })],
 })
