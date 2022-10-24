@@ -88,10 +88,10 @@ module.exports = {
           res.header('auth-token', token).json({
             error: null,
             data: {
-              user: {
-                name: userJson._id,
-                id: userJson.email,
-                    },
+              user: 
+              {
+                email: userJson.email,
+              },
               token
             }
           })

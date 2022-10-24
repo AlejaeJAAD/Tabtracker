@@ -6,7 +6,9 @@ import Tabtracker from '@/views/Tabtracker.vue'
 import TabtrackerRegister from '@/views/TabtrackerRegister.vue'
 import TabtrackerLogin from '@/views/TabtrackerLogin.vue'
 import Songs from '@/views/Songs.vue'
-import CreateSong from '@/views/CreateSong.vue'
+import CreateSong from '@/components/Songs/CreateSong.vue'
+import ViewSong from '@/components/Songs/ViewSong.vue'
+import SongEdit from '@/components/Songs/SongEdit.vue'
 import Landing from '@/views/Landing.vue'
 
 Vue.use(VueRouter)
@@ -41,6 +43,16 @@ const routes = [
     path: '/songs/create',
     name: 'songs-create',
     component: CreateSong
+  },
+  {
+    path: '/songs/:songId',
+    name: 'view-song',
+    component: ViewSong
+  },
+  {
+    path: '/songs/:songId/edit',
+    name: 'song-edit',
+    component: SongEdit,
   },
   {
     path: '/test',

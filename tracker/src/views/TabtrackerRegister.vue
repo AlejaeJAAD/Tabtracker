@@ -76,7 +76,6 @@
                     })
                     const token = response.data.data.token
                     const user = response.data.data.user
-                    console.log(response.data.data)
                     this.$store.dispatch('setToken', token)
                     this.$store.dispatch('setUser', user)
                     this.$router.push({
