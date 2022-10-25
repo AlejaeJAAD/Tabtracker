@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/components/HelloWorld.vue'
 import Test from '@/views/Test.vue'
 import Tabtracker from '@/views/Tabtracker.vue'
 import TabtrackerRegister from '@/views/TabtrackerRegister.vue'
@@ -9,15 +8,17 @@ import Songs from '@/views/Songs.vue'
 import CreateSong from '@/components/Songs/CreateSong.vue'
 import ViewSong from '@/components/Songs/ViewSong.vue'
 import SongEdit from '@/components/Songs/EditSong.vue'
+import Dashboard from '@/views/Dashboard.vue'
 import Landing from '@/views/Landing.vue'
+import store from '@/store/store.js'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'landing',
+    component: Landing
   },
   {
     path: '/tabtracker',
@@ -27,17 +28,24 @@ const routes = [
   {
     path: '/tabtrackerregister',
     name: 'tabtrackerregister',
-    component: TabtrackerRegister
+    component: TabtrackerRegister,
+    meta: {
+      requiresGuest: true
+    },
   },
   {
     path: '/tabtrackerlogin',
     name: 'tabtrackerlogin',
-    component: TabtrackerLogin
+    component: TabtrackerLogin,
+    meta: {
+      requiresGuest: true
+    },
   },
   {
     path: '/songs',
     name: 'songs',
-    component: Songs
+    component: Songs,
+    meta: {requireAuth: true}
   },
   {
     path: '/songs/create',
@@ -55,14 +63,14 @@ const routes = [
     component: SongEdit,
   },
   {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+  },
+  {
     path: '/test',
     name: 'test',
     component: Test,
-  },
-  {
-    path: '/landing',
-    name: 'landing',
-    component: Landing,
   },
 ]
 
@@ -70,6 +78,25 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const token = store.state.token
+  const isLoggedin = store.state.isUserLoggedIn
+  
+  const rutaProtegida = to.matched.some(record => record.meta.requireAuth);
+  const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
+
+  if(rutaProtegida && token === null){
+    // ruta protegida es true
+    // token es nulo true, por ende redirigimos al inicio
+    next({name: 'home'})
+  } else if (requiresGuest && isLoggedin) {
+    next({name: 'songs'});
+  } else{
+    // En caso contrario sigue...
+    next()
+  }
 })
 
 export default router

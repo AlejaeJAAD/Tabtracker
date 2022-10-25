@@ -9,7 +9,16 @@
 
 <script>
     export default {
-        
+        data() {
+            return {
+
+            }
+        },
+        created(){
+            if(this.$store.state.isUserLoggedIn) {
+              this.$router.replace('/dashboard')
+            }
+        }
     }
 </script>
 

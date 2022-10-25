@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "js-cookie": "^3.0.1",
+    "secure-ls": "^1.2.6",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vue-youtube-embed": "^2.2.2",
