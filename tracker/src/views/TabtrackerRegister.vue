@@ -12,6 +12,12 @@
                             >
                             <br>
                             <v-text-field
+                                label="First Name"
+                                v-model="firstName"
+                                required
+                            ></v-text-field>
+                            <br>
+                            <v-text-field
                                 label="Email"
                                 v-model="email"
                                 required
@@ -23,6 +29,12 @@
                                 type="password"
                                 v-model="password"
                                 autocomplete="new-password"
+                            ></v-text-field>
+                            <br>
+                            <v-text-field
+                                label="Role"
+                                v-model="role"
+                                required
                             ></v-text-field>
                             </form>
                             <br>
@@ -57,8 +69,10 @@
         data() {
             return {
                 color: 'rgb(233, 69, 96)',
+                firstName: '',
                 email: '',
                 password: '',
+                role: '',
                 error: null
             }
         },
@@ -71,9 +85,12 @@
             async register () {
                 try {
                     const response = await AuthenticationService.register({
-                    email: this.email,
-                    password: this.password
+                        firstName: this.firstName,
+                        email: this.email,
+                        password: this.password,
+                        role: this.role
                     })
+                    console.log(response)
                     const token = response.data.data.token
                     const user = response.data.data.userJson
                     this.$store.dispatch('setToken', token)

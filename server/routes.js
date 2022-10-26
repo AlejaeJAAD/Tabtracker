@@ -10,7 +10,7 @@ const verifyToken = require('./validate-token');
 
 module.exports = (app) => {
     app.post('/register',
-    AuthenticationControllerPolicy.register,
+        AuthenticationControllerPolicy.register,
         AuthenticationController.register)
     app.post('/login',
         AuthenticationController.login)

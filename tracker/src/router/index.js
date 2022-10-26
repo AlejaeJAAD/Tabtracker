@@ -66,6 +66,7 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
+    meta: {requireAuth: true}
   },
   {
     path: '/test',
@@ -90,7 +91,7 @@ router.beforeEach((to, from, next) => {
   if(rutaProtegida && token === null){
     // ruta protegida es true
     // token es nulo true, por ende redirigimos al inicio
-    next({name: 'home'})
+    next({name: 'landing'})
   } else if (requiresGuest && isLoggedin) {
     next({name: 'songs'});
   } else{

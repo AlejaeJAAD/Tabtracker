@@ -20,6 +20,17 @@ app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
 
+process.on('unhandledRejection', error => {
+    console.log('unhandledRejection', error.message);
+  });
+  
+// parse requests of content-type - application/json
+app.use(express.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({
+extended: true
+}));
+
 require('./routes')(app)
 
 // Middleware para Vue.js router modo history

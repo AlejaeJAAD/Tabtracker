@@ -74,8 +74,9 @@
                         email: this.email,
                         password: this.password
                     })
-                    const token = response.data.data.token
-                    const user = response.data.data.userJson
+                    console.log(response.data)
+                    const token = response.data.accessToken
+                    const user = response.data.user
                     this.$store.dispatch('setToken', token)
                     this.$store.dispatch('setUser', user)
                     this.$router.push({
