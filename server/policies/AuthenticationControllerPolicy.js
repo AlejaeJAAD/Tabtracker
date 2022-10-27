@@ -11,7 +11,6 @@ module.exports = {
             role: Joi.string()
           })
           
-        console.log(schema)
         const {error} = schema.validate(req.body)
 
         if(error) {

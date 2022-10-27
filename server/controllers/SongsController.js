@@ -52,7 +52,9 @@ module.exports = {
         }
     },
     async getcreatedSongInfo (req, res) {
-        const query = req.body.songName.replace(/ /g,"_")
+        const artistName = req.body.artistName.replace(/ /g,"_")
+        const songName = req.body.songName.replace(/ /g,"_")
+        const query = (`${artistName}_${songName}`)
       
         if (!YOUTUBE_API_KEY) {
             throw new Error("No API key is provided");
@@ -60,6 +62,7 @@ module.exports = {
 
         //Search video by name
         const url = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&type=video&part=snippet&q=${query}`;
+        console.log(url)
         const response01 = await fetch(url);
         const data01 = await response01.json();
 

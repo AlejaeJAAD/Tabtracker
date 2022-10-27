@@ -17,10 +17,46 @@
                     </v-text-field>
 
                     <!-- Genre -->
-                    <v-text-field
+                    <!-- <v-text-field
                         label="Genre"
                         v-model="song.genre">
-                    </v-text-field>
+                    </v-text-field> -->
+
+                    <v-card>
+                        <v-list>
+                            <v-list-group prepend-icon="mdi-music-clef-treble">
+                                <template v-slot:activator>
+                                    <v-list-item-title>Genre</v-list-item-title>
+                                </template>
+                                
+                                <v-list-group sub-group no-action v-for="item in genres"
+                                        :key="item.title"
+                                        v-model="item.subactive"
+                                        @click="closeOther(item, genres)"
+                                >
+                                    <template v-slot:activator>
+                                        <v-list-item>
+                                            <v-list-item-content>
+                                                <v-list-item-title>
+                                                    {{item.title}}
+                                                </v-list-item-title>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </template>
+                                    <v-list-item>
+                                        <v-select
+                                        class="ma-1"
+                                        :items="item.subgenres"
+                                        :label=item.title
+                                        outlined
+                                        v-model="song.genre"
+                                        >
+                                    </v-select>
+                                    </v-list-item>
+                                </v-list-group>
+                            </v-list-group>
+                        </v-list>
+                    </v-card>
 
                     <!-- Album -->
                     <v-text-field
@@ -111,18 +147,49 @@
                 required: (value) => !!value || 'Required',
                 dialog: false,
                 songData: null,
+                genres: [
+                    {
+                        title: 'Art (classical)',
+                        subactive: false,
+                        subgenres: [
+                            "Andalusian classical",
+                            "Indian classical",
+                            "Korean court",
+                            "Persian classical",
+                        ]
+                    },
+                    {
+                        title: 'Avant-garde and experimental',
+                        subactive: false,
+                        subgenres: [
+                            "Danger music",
+                            "Electroacoustic",
+                            "Lo-fi",
+                            "Musique concrète",
+                            "Noise",
+                            "Outsider music",
+                            "Industrial music",
+                            "Progressive music",
+                        ]
+                    }
+                ],
+                opened: false,
             }
+            
         },
         methods: {
             async createSong() {
+                console.log(this.song.genre)
                 this.error = null
 
                 //SONG DATA YT API
                 try {
                     await SongsService.createdSongInfo({
+                        artistName: this.song.artist,
                         songName: this.song.title
                     }).then(res => {
                         this.songData = res.data
+                        console.log(res.data, this.songData)
                     })
                 } catch(err) {
                     console.log(err)
@@ -180,6 +247,15 @@
                 } else {
                     console.log('ERROR')
                 }
+            },
+            closeOther(val, items) {
+                items.forEach((x, i) => {
+                    // console.log(items)
+                    // console.log(val)
+                    // console.log(val.subgenres)
+                    // console.log(i)
+                    if(val.subgenres != i) x.subactive = false
+                })
             },
         },
         components: {

@@ -4,7 +4,7 @@
         <h3>Dashboard</h3>
         <hr>
         <br>
-        <div v-for="(user, i) in this.users" :key="user._id">
+        <div v-for="(user, i) in this.data.users" :key="user._id">
             Usuario numero {{i+1}} - {{user.email}}
         </div>
     </div>
@@ -16,12 +16,11 @@
         data() {
             return {
                 token: '',
-                users: '',
+                data: '',
             }
         },
         created() {
             this.token = this.$store.state.token
-            console.log(this.token)
             this.ruta()
         },
         async mounted () {
@@ -37,8 +36,8 @@
                             'auth-token': this.token
                         }
                     })
-                    this.users = await res.data
-                    console.log(this.users)
+                    this.data = await res.data
+                    console.log(this.data)
                 } catch (err) {
                     console.log(err)
                 }

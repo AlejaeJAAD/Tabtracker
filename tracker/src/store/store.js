@@ -67,7 +67,7 @@ export default new Vuex.Store({
         'sessionToken',
         'user', 
         'isUserLoggedIn',
-        'cookiesAccepted',
+        'authenticated'
       ],
       // storage: {
       //   getItem: key => Cookies.get(key),

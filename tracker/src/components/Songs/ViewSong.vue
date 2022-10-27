@@ -4,7 +4,6 @@
             <div>
                 {{song.title}}
                 <hr>
-                {{song.tab}}
             </div>
         </panel>
     </div>

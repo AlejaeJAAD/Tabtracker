@@ -13,13 +13,13 @@
                             <br>
                             <v-text-field
                                 label="First Name"
-                                v-model="firstName"
+                                v-model="user.fullName"
                                 required
                             ></v-text-field>
                             <br>
                             <v-text-field
                                 label="Email"
-                                v-model="email"
+                                v-model="user.email"
                                 required
                             ></v-text-field>
                             <br>
@@ -27,13 +27,13 @@
                                 label="Password"
                                 required
                                 type="password"
-                                v-model="password"
+                                v-model="user.password"
                                 autocomplete="new-password"
                             ></v-text-field>
                             <br>
                             <v-text-field
                                 label="Role"
-                                v-model="role"
+                                v-model="user.role"
                                 required
                             ></v-text-field>
                             </form>
@@ -69,10 +69,12 @@
         data() {
             return {
                 color: 'rgb(233, 69, 96)',
-                firstName: '',
-                email: '',
-                password: '',
-                role: '',
+                user: {
+                    fullName: '',
+                    email: '',
+                    password: '',
+                    role: ''
+                },
                 error: null
             }
         },
@@ -84,19 +86,17 @@
         methods: {
             async register () {
                 try {
-                    const response = await AuthenticationService.register({
-                        firstName: this.firstName,
-                        email: this.email,
-                        password: this.password,
-                        role: this.role
-                    })
+                    const response = await AuthenticationService.register(this.user)
                     console.log(response)
-                    const token = response.data.data.token
-                    const user = response.data.data.userJson
-                    this.$store.dispatch('setToken', token)
-                    this.$store.dispatch('setUser', user)
+
+
+                    // const token = response.data.data.token
+                    // const user = response.data.data.userJson
+                    // this.$store.dispatch('setToken', token)
+                    // this.$store.dispatch('setUser', user)
+                    
                     this.$router.push({
-                    name: 'songs'
+                    name: 'tabtrackerlogin'
                     })
                 } catch (error) {
                     this.error = error.response.data.error
