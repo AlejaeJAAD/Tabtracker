@@ -7,7 +7,6 @@ const cookieParser = require('cookie-parser');
 
 require('dotenv').config()
 
-// Conexión a Base de datos
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@tabtracker-cluster.jtmwcvd.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
 mongoose.connect(uri,
     { useNewUrlParser: true, useUnifiedTopology: true }
@@ -29,9 +28,7 @@ process.on('unhandledRejection', error => {
     console.log('unhandledRejection', error.message);
   });
   
-// parse requests of content-type - application/json
 app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({
 extended: true
 }));
@@ -43,7 +40,6 @@ const history = require('connect-history-api-fallback');
 app.use(history());
 app.use(express.static(__dirname + "/public"));
 
-// Iniciar server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Servidor iniciado en: ${PORT}`)

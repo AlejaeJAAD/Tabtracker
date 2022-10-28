@@ -12,6 +12,7 @@
         </div>
         <div class="white--text">
             Bienvenido {{user.fullName}}
+            <v-btn @click="cerrarSesion">Cerrar sesion</v-btn>
         </div>
     </div>
 </template>
@@ -58,6 +59,21 @@
                     console.log(err)
                 }
             },
+            async cerrarSesion() {
+                try {
+                    const res = await fetch('http://localhost:3001/logout', {
+                        method: 'GET',
+                        withCredentials: true,
+                        credentials: "include",
+                    });
+                    console.log(res.ok, res.status);
+                    this.$store.dispatch('setToken', null)
+                    this.$store.dispatch('setUser', null)
+                    this.$router.push('/')
+                } catch (err) {
+                    console.log(err)
+                }
+            }
         }
     }
 </script>

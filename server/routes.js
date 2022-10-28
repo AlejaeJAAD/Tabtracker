@@ -2,7 +2,6 @@ const AuthenticationController = require('./controllers/AuthenticationController
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 const SongsController = require('./controllers/SongsController')
 const YTDownloaderController = require('./controllers/YTDownloaderController')
-const DashboardController = require('./controllers/DashboardController')
 
 //Validate token
 const verifyToken = require('./validate-token');
@@ -13,6 +12,8 @@ module.exports = (app) => {
         AuthenticationController.register)
     app.post('/login',
         AuthenticationController.login)
+    app.get('/logout',
+        AuthenticationController.logout)
     app.get('/refresh-token', AuthenticationController.refreshToken)
 
 
@@ -34,6 +35,5 @@ module.exports = (app) => {
 
     //Protected route
     app.get('/dashboard', verifyToken, AuthenticationController.infoUser,
-        //DashboardController.show
         )
 }

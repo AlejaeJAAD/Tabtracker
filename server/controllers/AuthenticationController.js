@@ -215,6 +215,7 @@ module.exports = {
       }
     },
     async logout(req, res) {
+      console.log('hola')
       await res.clearCookie("refreshToken")
       return res.json({ ok: true });
     }
