@@ -14,6 +14,9 @@ module.exports = {
   },
   YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || 'AIzaSyDxgDt5XyVSTAwqZQYChOnHkNOebkPji3k',
   authentication: {
-    jwtSecret: process.env.JWT_SECRET || 'secret'
+    jwtSecret: process.env.JWT_SECRET || 'secret',
+    jwtSecretRefresh: process.env.JWT_SECRET_REFRESH || 'secret1908',
+    jwtExpiration: 3600,
+    jwtRefreshExpiration: 86400,
   }
 }

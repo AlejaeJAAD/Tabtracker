@@ -1,11 +1,17 @@
 <template>
-    <div>
+    <div class="bgColor">
         <h1>Ruta protegida</h1>
         <h3>Dashboard</h3>
         <hr>
         <br>
-        <div v-for="(user, i) in this.data.users" :key="user._id">
-            Usuario numero {{i+1}} - {{user.email}}
+        <div class="bgUsers white--text">
+            <h3>Hola</h3>
+            <div class="bgAnother white--text">
+                <h3>Another color</h3>
+            </div>
+        </div>
+        <div class="white--text">
+            Bienvenido {{user.fullName}}
         </div>
     </div>
 </template>
@@ -17,6 +23,7 @@
             return {
                 token: '',
                 data: '',
+                user: ''
             }
         },
         created() {
@@ -30,22 +37,40 @@
         methods: {
             async ruta() {
                 try {
-                    const res = await DashboardService.show({
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'auth-token': this.token
-                        }
+                    const resToken = await fetch('http://localhost:3001/refresh-token', {
+                        method: 'GET',
+                        credentials: "include"
                     })
-                    this.data = await res.data
-                    console.log(this.data)
+
+                    const {token} = await resToken.json()
+
+                    const res = await fetch('http://localhost:3001/dashboard', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                    })
+                    const data = await res.json();
+                    this.user = data.user
+
                 } catch (err) {
                     console.log(err)
                 }
-            }
+            },
         }
     }
 </script>
 
 <style lang="scss" scoped>
-
+.bgColor{
+    background-color: #0f0f0f
+}
+.bgUsers {
+    margin: 2rem;
+    background-color: #282828
+}
+.bgAnother {
+    background-color: #212121
+}
 </style>

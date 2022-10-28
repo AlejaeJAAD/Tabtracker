@@ -6,6 +6,6 @@ export default () => {
     baseURL: `http://localhost:3001/`,
     headers: {
       Authorization: `Bearer ${store.state.token}`
-    }
+    },
   })
 }

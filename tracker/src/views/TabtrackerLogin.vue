@@ -74,8 +74,21 @@
                         email: this.email,
                         password: this.password
                     })
+                    
+                    // const response = await fetch("http://localhost:3001/login", {
+                    //     method: "POST",
+                    //     mode: "cors",
+                    //     credentials: "include",
+                    //     body: JSON.stringify({ email: this.email, password: this.password }),
+                    // }).then((res) => {
+                    //     console.log(res);
+                    // },(err) => {
+                    //     console.log(err);
+                    //     }
+                    // )
+
                     console.log(response.data)
-                    const token = response.data.accessToken
+                    const token = response.data.token
                     const user = response.data.user
                     this.$store.dispatch('setToken', token)
                     this.$store.dispatch('setUser', user)
@@ -83,7 +96,7 @@
                     name: 'songs'
                     })
                 } catch (error) {
-                    this.error = error.response.data.error
+                    this.error = error
                 }
             }
         },

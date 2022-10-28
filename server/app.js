@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config()
 
@@ -18,7 +19,11 @@ mongoose.connect(uri,
 const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
-app.use(cors())
+
+app.use(cors({ origin: "http://localhost:8080", credentials: true }))
+
+app.use(express.json());
+app.use(cookieParser());
 
 process.on('unhandledRejection', error => {
     console.log('unhandledRejection', error.message);

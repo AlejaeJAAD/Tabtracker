@@ -1,15 +1,19 @@
 const jwt = require('jsonwebtoken')
+const errorTokens = require("./utils/errorsToken.js")
 
 // middleware to validate token (rutas protegidas)
 const verifyToken = (req, res, next) => {
-    const token = req.header('auth-token')
-    if (!token) return res.status(401).json({ error: 'Acceso denegado' })
     try {
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET)
-        req.user = verified
-        next()
+        let token = req.headers?.authorization;
+        if (!token) throw new Error("No existe el token");
+
+        token = token.split(" ")[1];
+        const { uid } = jwt.verify(token, process.env.TOKEN_SECRET);
+        req.uid = uid;
+        next();
     } catch (error) {
-        res.status(400).json({error: 'El token no es válido'})
+        console.log(error);
+        return res.status(401).json({ error: errorTokens(error.message) });
     }
 }
 
