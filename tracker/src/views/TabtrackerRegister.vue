@@ -89,12 +89,6 @@
                     const response = await AuthenticationService.register(this.user)
                     console.log(response)
 
-
-                    // const token = response.data.data.token
-                    // const user = response.data.data.userJson
-                    // this.$store.dispatch('setToken', token)
-                    // this.$store.dispatch('setUser', user)
-                    
                     this.$router.push({
                     name: 'tabtrackerlogin'
                     })

@@ -62,36 +62,26 @@
                 error: null
             }
         },
-        watch: {
-            email(value) {
-                console.log('Email has changed', value)
-            }
-        },
         methods: {
             async login () {
                 try {
-                    const response = await AuthenticationService.login({
+                    const data = {
                         email: this.email,
                         password: this.password
-                    })
-                    
-                    // const response = await fetch("http://localhost:3001/login", {
-                    //     method: "POST",
-                    //     mode: "cors",
-                    //     credentials: "include",
-                    //     body: JSON.stringify({ email: this.email, password: this.password }),
-                    // }).then((res) => {
-                    //     console.log(res);
-                    // },(err) => {
-                    //     console.log(err);
-                    //     }
-                    // )
+                    }
 
-                    console.log(response.data)
-                    const token = response.data.token
-                    const user = response.data.user
-                    this.$store.dispatch('setToken', token)
-                    this.$store.dispatch('setUser', user)
+                    const loginData = await fetch('http://localhost:3001/login', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    })
+
+                    const content = await loginData.json();
+                    this.$store.dispatch('setSecure', content.token)
+
                     this.$router.push({
                     name: 'songs'
                     })
@@ -100,11 +90,6 @@
                 }
             }
         },
-        // mounted () {
-        //     setTimeout(() => {
-        //         this.email = 'exampleEmail@email.com'
-        //     }, 2000);
-        // },
     }
 </script>
 

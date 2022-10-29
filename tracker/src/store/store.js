@@ -18,63 +18,44 @@ export default new Vuex.Store({
   strict: true,
   state: {
     token: null,
-    user: null,
     isUserLoggedIn: false,
-    authenticated: null,
   },
   getters: {
-    getToken(state) {
-      return state.sessionToken
-    },
   },
   mutations: {
-    setToken (state, token) {
+    setSecure (state, token) {
       state.token = token
       if (token) {
-        state.authenticated = localStorage.getItem('ALEJAE-1908-TT')
         state.isUserLoggedIn = true
       } else {
+        state.token = null
         state.isUserLoggedIn = false
-        state.authenticated = null
       }
-    },
-    setUser (state, user) {
-      state.user = user
     },
     clearAuthData(state) {
       state.token = null
-      state.sessionToken = null
       state.isUserLoggedIn = null
-      state.user = null
-      state.cookiesAccepted = false
     },
   },
   actions: {
-    setToken ({commit}, token) {
-      commit('setToken', token)
-    },
-    setUser ({commit}, user) {
-      commit('setUser', user)
+    setSecure ({commit}, token) {
+      commit('setSecure', token)
     },
   },
   modules: {
   },
   plugins: [
     createPersistedState({
-      key: 'ALEJAE-1908-TT',
+      key: 'TT-S-1908',
       paths: [
         'token',
-        'sessionToken',
-        'user', 
         'isUserLoggedIn',
-        'authenticated'
       ],
       // storage: {
       //   getItem: key => Cookies.get(key),
       //   setItem: (key, value) => Cookies.set(key, value, {expires: 1, secure: false}),
       //   removeItem: key => Cookies.remove(key)
       // }
-
       storage: {
         getItem: (key) => ls.get(key),
         setItem: (key, value) => ls.set(key, value),
@@ -82,4 +63,5 @@ export default new Vuex.Store({
       }
     })
   ]
+  //plugins: [createPersistedState()],
 })

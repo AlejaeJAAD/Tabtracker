@@ -22,13 +22,11 @@
     export default {
         data() {
             return {
-                token: '',
                 data: '',
                 user: ''
             }
         },
         created() {
-            this.token = this.$store.state.token
             this.ruta()
         },
         async mounted () {
@@ -67,8 +65,7 @@
                         credentials: "include",
                     });
                     console.log(res.ok, res.status);
-                    this.$store.dispatch('setToken', null)
-                    this.$store.dispatch('setUser', null)
+                    this.$store.dispatch('setSecure', null)
                     this.$router.push('/')
                 } catch (err) {
                     console.log(err)

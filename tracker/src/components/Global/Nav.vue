@@ -72,8 +72,7 @@
       },
       methods: {
         logout() {
-          this.$store.dispatch('setToken', null)
-          this.$store.dispatch('setUser', null)
+          this.$store.dispatch('setSecure', null)
           this.$router.push('/')
         }
       },
