@@ -72,7 +72,7 @@
       },
       methods: {
         logout() {
-          this.$store.dispatch('setSecure', null)
+          this.$store.dispatch('setSecure', false)
           this.$router.push('/')
         }
       },

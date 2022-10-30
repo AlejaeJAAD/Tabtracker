@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const tokenVerificationErrors = require('../utils/tokenVerificationErrors.js')
 
-function requireRefreshToken(req, res, next) {
+const requireRefreshToken = (req, res, next) => {
     try {
         const refreshTokenCookie = req.cookies.refreshToken;
         if (!refreshTokenCookie) throw new Error("No existe el token");

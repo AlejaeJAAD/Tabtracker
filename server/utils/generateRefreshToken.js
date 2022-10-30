@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 
-function generateRefreshToken(uid, res) {
+const generateRefreshToken = (uid, res) => {
     try {
         const expiresIn = 60 * 60
         const refreshToken = jwt.sign(

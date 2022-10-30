@@ -6,11 +6,13 @@ import Vuetify from 'vuetify'
 import { sync } from 'vuex-router-sync'
 import vuetify from './plugins/vuetify'
 import VueYouTubeEmbed from 'vue-youtube-embed'
+import VueCookies from 'vue-cookies'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 Vue.use(VueYouTubeEmbed)
+Vue.use(VueCookies);
 
 sync(store, router)
 

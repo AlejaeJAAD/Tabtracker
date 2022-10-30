@@ -70,7 +70,8 @@
                         password: this.password
                     }
 
-                    const loginData = await fetch('http://localhost:3001/login', {
+                    // const loginData = 
+                    await fetch('http://localhost:3001/login', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json'
@@ -78,9 +79,7 @@
                         credentials: 'include',
                         body: JSON.stringify(data)
                     })
-
-                    const content = await loginData.json();
-                    this.$store.dispatch('setSecure', content.token)
+                    this.$store.dispatch('setSecure', true)
 
                     this.$router.push({
                     name: 'songs'

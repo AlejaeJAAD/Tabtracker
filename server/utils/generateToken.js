@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 
-function generateToken(uid) {
+const generateToken = (uid) => {
     const expiresIn = 60 * 60
     try {
         const token = jwt.sign(

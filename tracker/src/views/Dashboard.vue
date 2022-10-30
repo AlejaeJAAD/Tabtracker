@@ -30,8 +30,6 @@
             this.ruta()
         },
         async mounted () {
-           //localStorage.getItem('TT-S-STORAGE');
-            //localStorage.setItem('TT-S-STORAGE', 'Q')
         },
         methods: {
             async ruta() {
@@ -50,6 +48,7 @@
                             Authorization: "Bearer " + token,
                         },
                     })
+
                     const data = await res.json();
                     this.user = data.user
 
@@ -61,11 +60,10 @@
                 try {
                     const res = await fetch('http://localhost:3001/logout', {
                         method: 'GET',
-                        withCredentials: true,
                         credentials: "include",
                     });
+                    this.$store.dispatch('setSecure', false)
                     console.log(res.ok, res.status);
-                    this.$store.dispatch('setSecure', null)
                     this.$router.push('/')
                 } catch (err) {
                     console.log(err)
