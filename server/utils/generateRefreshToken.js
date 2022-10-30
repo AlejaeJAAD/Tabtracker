@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 
 const generateRefreshToken = (uid, res) => {
     try {
-        const expiresIn = 60 * 60
+        const expiresIn = 60 * 60 * 24 * 30
         const refreshToken = jwt.sign(
             { uid },
             process.env.TOKEN_SECRET_REFRESH, 
@@ -17,7 +17,7 @@ const generateRefreshToken = (uid, res) => {
         {
             httpOnly: true,
             secure: !(process.env.MODO === "developer"),
-            expire: new Date(Date.now() + expiresIn),
+            expires: new Date(Date.now() + expiresIn * 1000),
         })
     } catch (err) {
         console.log(err)

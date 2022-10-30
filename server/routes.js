@@ -7,6 +7,9 @@ const YTDownloaderController = require('./controllers/YTDownloaderController')
 const requireToken = require('./middlewares/requireToken')
 const requireRefreshToken = require('./middlewares/requireRefreshToken')
 
+//Links
+const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
+
 module.exports = (app) => {
     // Register route
     app.post('/register',
@@ -53,6 +56,27 @@ module.exports = (app) => {
 
     // Download song using PY Script
     app.post('/ytdownloader',
-        YTDownloaderController.download)
+        YTDownloaderController.download
+    )
+
+    // GET      api/v1/links                all links
+    // GET      api/v1/links/:nanoLink      search link
+    // POST     api/v1/links                create link
+    // PATCH    api/v1/links                update link
+    // DELETE   api/v1/links/:nanoLink      remove link
+    app.get('/links', requireToken, getLinks
+    )
+    
+    app.post('/links', requireToken, createLink
+    )
+
+    app.delete('/links/:id', requireToken, removeLink
+    )
+
+    app.patch('/links/:id', requireToken, updateLink
+    )
+
+    app.get('/links/:nanoLink', getNanoLink
+    )
 
 }

@@ -1,5 +1,3 @@
-const { token } = require("morgan");
-
 const tokenVerificationErrors = {
     "invalid signature": "La firma del JWT no es válida",
     "jwt expired": "JWT expirado",
