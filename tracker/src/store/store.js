@@ -3,16 +3,8 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import SecureLS from 'secure-ls'
 const ls = new SecureLS({isCompression: false})
-import Cookies from 'js-cookie';
-
 
 Vue.use(Vuex)
-
-//this.$cookies.get("refreshToken");
-
-// const cookieName = 'TT-S';
-// const storageKey = 'TT-S-STORAGE';
-// const encryptionToken = Cookie.get(cookieName) || uuidv4();
 
 export default new Vuex.Store({
   strict: true,
@@ -23,18 +15,20 @@ export default new Vuex.Store({
 
   },
   mutations: {
-    setSecure (state, val) {
-      if (val) {
-        state.isUserLoggedIn = true
-      } else {
-        state.isUserLoggedIn = false
-      }
+    setSecure (state) {
+      state.isUserLoggedIn = true
     },
+    setLogout (state) {
+      state.isUserLoggedIn = false
+    }
   },
   actions: {
-    setSecure ({commit}, val) {
-      commit('setSecure', val)
+    setSecure ({commit}) {
+      commit('setSecure')
     },
+    setLogout ({commit}) {
+      commit('setLogout')
+    }
   },
   modules: {
   },
@@ -43,11 +37,6 @@ export default new Vuex.Store({
       paths: [
         'isUserLoggedIn',
       ],
-      // storage: {
-      //   getItem: key => Cookies.get(key),
-      //   setItem: (key, value) => Cookies.set(key, value, {expires: 1, secure: false}),
-      //   removeItem: key => Cookies.remove(key)
-      // }
       storage: {
         getItem: (key) => ls.get(key),
         setItem: (key, value) => ls.set(key, value),
@@ -55,5 +44,4 @@ export default new Vuex.Store({
       }
     })
   ]
-  //plugins: [createPersistedState()],
 })

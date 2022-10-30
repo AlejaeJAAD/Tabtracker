@@ -62,8 +62,7 @@
                         method: 'GET',
                         credentials: "include",
                     });
-                    this.$store.dispatch('setSecure', false)
-                    console.log(res.ok, res.status);
+                    this.$store.dispatch('setLogout')
                     this.$router.push('/')
                 } catch (err) {
                     console.log(err)

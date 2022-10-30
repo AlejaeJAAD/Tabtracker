@@ -79,10 +79,10 @@
                         credentials: 'include',
                         body: JSON.stringify(data)
                     })
-                    this.$store.dispatch('setSecure', true)
+                    this.$store.dispatch('setSecure')
 
                     this.$router.push({
-                    name: 'songs'
+                    name: 'dashboard'
                     })
                 } catch (error) {
                     this.error = error

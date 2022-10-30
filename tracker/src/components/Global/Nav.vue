@@ -71,9 +71,18 @@
         // }
       },
       methods: {
-        logout() {
-          this.$store.dispatch('setSecure', false)
-          this.$router.push('/')
+        async logout() {
+          try {
+                    const res = await fetch('http://localhost:3001/logout', {
+                        method: 'GET',
+                        credentials: "include",
+                    });
+                    this.$store.dispatch('setLogout')
+                    console.log(res.ok, res.status);
+                    this.$router.push('/')
+                } catch (err) {
+                    console.log(err)
+                }
         }
       },
     };

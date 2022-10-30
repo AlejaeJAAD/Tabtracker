@@ -29,23 +29,19 @@ const routes = [
     path: '/tabtrackerregister',
     name: 'tabtrackerregister',
     component: TabtrackerRegister,
-    meta: {
-      requiresGuest: true
-    },
+    meta: {requiresGuest: true}
   },
   {
     path: '/tabtrackerlogin',
     name: 'tabtrackerlogin',
     component: TabtrackerLogin,
-    meta: {
-      requiresGuest: true
-    },
+    meta: {requiresGuest: true}
   },
   {
     path: '/songs',
     name: 'songs',
     component: Songs,
-    meta: {requireAuth: true}
+    meta: {requiresAuth: true}
   },
   {
     path: '/songs/create',
@@ -66,7 +62,7 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
-    meta: {requireAuth: true}
+    meta: {requiresAuth: true}
   },
   {
     path: '/test',
@@ -82,20 +78,17 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = store.state.token
   const isLoggedin = store.state.isUserLoggedIn
   
-  const rutaProtegida = to.matched.some(record => record.meta.requireAuth);
-  const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
-
-  if(rutaProtegida && token === null){
-    // ruta protegida es true
-    // token es nulo true, por ende redirigimos al inicio
-    next({name: 'landing'})
-  } else if (requiresGuest && isLoggedin) {
-    next({name: 'songs'});
-  } else{
-    // En caso contrario sigue...
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    if(!isLoggedin) {
+      next('tabtrackerlogin')
+    } else {
+      next()
+    }
+  } else if (to.matched.some(route => route.meta.requiresGuest) && isLoggedin) {
+    next('dashboard')
+  } else {
     next()
   }
 })
