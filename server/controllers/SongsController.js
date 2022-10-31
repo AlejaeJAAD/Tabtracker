@@ -6,26 +6,13 @@ const fetch = (...args) =>
 module.exports = {
     async index (req, res) {
         try {
-          Song.find({}, 
-            {
-              _id : 1,
-              title : 1,
-              artist: 1,
-              genre: 1,
-              album: 1,
-              albumImageUrl: 1,
-              youtubeChannelId: 1,
-              youtubeVideoId: 1,
-              lyrics: 1,
-              tab: 1,
-              subscriberCount: 1,
-              videoCount: 1,
-              viewCount: 1
-              
-            }, function (err, data) {
-            return res.status(200).json(data)
-          }
-        )} catch (err) {
+          const songs = await Song.find({
+            uid: req.uid
+          }).lean()
+          return res.json({
+          songs
+          })
+      } catch (err) {
           res.status(500).send({
             error: 'an error has occured trying to fetch the songs'
           })
@@ -42,14 +29,33 @@ module.exports = {
       }
     },
     async post (req, res) {
-        try {
-          const song = await Song.create(req.body)
-          res.send(song)
-        } catch (err) {
-          res.status(500).send({
-            error: 'an error has occured trying to create the song'
+      try {
+        const song = new Song({ 
+          title: req.body.title,
+          artist: req.body.artist,
+          genre: req.body.genre,
+          album: req.body.album,
+          albumImageUrl: req.body.albumImageUrl,
+          youtubeChannelId: req.body.youtubeChannelId,
+          youtubeVideoId: req.body.youtubeVideoId,
+          lyrics: req.body.lyrics,
+          susbcriberCount: req.body.susbcriberCount,
+          videoCount: req.body.videoCount,
+          viewCount: req.body.viewCount,
+          uid: req.uid 
+        })
+
+        console.log(song)
+        
+        const newSong = await song.save()
+        res.json({
+            newSong 
+        })
+      } catch (err) {
+          return res.status(500).json({
+              error: 'Some error with the server'
           })
-        }
+      }
     },
     async getcreatedSongInfo (req, res) {
         const artistName = req.body.artistName.replace(/ /g,"_")
@@ -65,6 +71,7 @@ module.exports = {
         console.log(url)
         const response01 = await fetch(url);
         const data01 = await response01.json();
+        console.log(data01)
 
         //Retrieve json from result of search
         const firstVideoSelectedData = data01.items[0]

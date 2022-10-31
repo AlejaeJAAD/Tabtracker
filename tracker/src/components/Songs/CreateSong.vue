@@ -189,7 +189,7 @@
                         songName: this.song.title
                     }).then(res => {
                         this.songData = res.data
-                        console.log(res.data, this.songData)
+                        console.log(res.data)
                     })
                 } catch(err) {
                     console.log(err)

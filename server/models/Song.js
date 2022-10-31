@@ -1,28 +1,59 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const songSchema = mongoose.Schema({
-  title: 
-    {type: String, required: true,},
-  artist: 
-    {type: String, required: true},
-  genre: 
-    {type: String, required: true},
-  album: 
-    {type: String, required: true},
-  albumImageUrl: 
-    {type: String, required: true},
-  youtubeChannelId: 
-    {type: String, required: true},
-  youtubeVideoId: 
-    {type: String, required: true},
-  lyrics: 
-    {type: String, required: true},
-  subscriberCount: 
-    {type: String, required: true},
-  videoCount: 
-    {type: String, required: true},
-  viewCount: 
-    {type: String, required: true}
+  title: {
+    type: String,
+    trim: true
+  },
+  artist: {
+    type: String,
+    trim: true
+  },
+  genre: {
+    type: String,
+    trim: true
+  },
+  album: {
+    type: String,
+    trim: true
+  },
+  albumImageUrl: {
+    type: String,
+    trim: true
+  },
+  youtubeChannelId: {
+    type: String,
+    trim: true
+  },
+  youtubeVideoId: {
+    type: String,
+    trim: true
+  },
+  lyrics: {
+    type: String,
+    trim: true
+  },
+  subscriberCount: {
+    type: String,
+    trim: true
+  },
+  videoCount: {
+    type: String,
+    trim: true
+  },
+  viewCount: {
+    type: String,
+    trim: true
+  },
+  uid: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  }
 })
 
 module.exports = mongoose.model('Song', songSchema)

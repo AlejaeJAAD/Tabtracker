@@ -35,7 +35,7 @@ module.exports = (app) => {
     )
     
     // Display all songs
-    app.get('/songs',
+    app.get('/songs', requireToken,
         SongsController.index
     )
 
@@ -45,17 +45,17 @@ module.exports = (app) => {
     )
 
     // Create song
-    app.post('/songs',
+    app.post('/songs', requireToken,
         SongsController.post
     )
 
     // Get song info using YT API
-    app.post('/createdSongInfo',
+    app.post('/createdSongInfo', requireToken,
         SongsController.getcreatedSongInfo
     )   
 
     // Download song using PY Script
-    app.post('/ytdownloader',
+    app.post('/ytdownloader', requireToken,
         YTDownloaderController.download
     )
 
