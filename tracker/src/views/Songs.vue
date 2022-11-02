@@ -107,7 +107,6 @@
 <script>
     import Nav from '../components/Global/Nav.vue';
     import Panel from '@/components/Songs/Panel.vue'
-    import SongsService from '@/services/SongsService'
     export default {
         components: { Nav, Panel },
         data() {
@@ -121,12 +120,36 @@
                 dialog: false,
             }
         },
+        created() {
+            this.song()
+        },
         async mounted () {
-            await SongsService.index().then(res => {
-                this.songs = JSON.parse(JSON.stringify(res.data));
-            }).catch(error => console.log(error));
         },
         methods: {
+            async song() {
+                try {
+                    const resToken = await fetch('http://localhost:3001/refresh-token', {
+                    method: 'GET',
+                    credentials: "include"
+                    })
+
+                    const {token} = await resToken.json()
+
+                    const res = await fetch('http://localhost:3001/songs', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                    })
+
+                    const data = await res.json()
+                    this.songs = data.songs
+                    console.log(data)
+                } catch (err) {
+                    console.log(err)
+                }
+            },
             async downloadVideo(youtubeVideoId) {
                 const videoURL = this.link+youtubeVideoId
                 try {

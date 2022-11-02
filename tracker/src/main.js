@@ -7,8 +7,11 @@ import { sync } from 'vuex-router-sync'
 import vuetify from './plugins/vuetify'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import VueCookies from 'vue-cookies'
+import Axios from "axios";
 
 Vue.config.productionTip = false
+
+Axios.defaults.baseURL = "http://localhost:3001";
 
 Vue.use(Vuetify)
 Vue.use(VueYouTubeEmbed)

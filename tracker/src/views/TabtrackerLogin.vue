@@ -51,7 +51,6 @@
 <script>
     import Nav from '../components/Global/Nav.vue'
     import Panel from '@/components/Songs/Panel.vue'
-    import AuthenticationService from '@/services/AuthenticationService'
     export default {
         components: { Nav, Panel },
         data() {

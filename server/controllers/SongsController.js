@@ -45,8 +45,6 @@ module.exports = {
           uid: req.uid 
         })
 
-        console.log(song)
-        
         const newSong = await song.save()
         res.json({
             newSong 
@@ -71,7 +69,6 @@ module.exports = {
         console.log(url)
         const response01 = await fetch(url);
         const data01 = await response01.json();
-        console.log(data01)
 
         //Retrieve json from result of search
         const firstVideoSelectedData = data01.items[0]

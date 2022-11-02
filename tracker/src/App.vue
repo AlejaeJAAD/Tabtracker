@@ -7,12 +7,14 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
-
-  data: () => ({
-    //
-  }),
-};
+  data() {
+    return {
+    }
+  },
+  created() {
+    console.log('App vue')
+  }
+}
 </script>

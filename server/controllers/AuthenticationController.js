@@ -121,8 +121,8 @@ module.exports = {
     },
     async infoUser(req, res) {
       try {
-          const user = await User.findById(req.uid).lean()
-          delete user.password;
+          const user = await User.findById(req.uid)
+          user.password = undefined;
           
           return res.json({ user });
           // if (user.role == 'admin') {

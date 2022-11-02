@@ -10,7 +10,7 @@
                 <h3>Another color</h3>
             </div>
         </div>
-        <div class="white--text">
+        <div class="white--text" v-for="user in getUserInfo" :key=user._id>
             Bienvenido {{user.fullName}}
             <v-btn @click="cerrarSesion">Cerrar sesion</v-btn>
         </div>
@@ -18,44 +18,28 @@
 </template>
 
 <script>
-    import DashboardService from '@/services/DashboardService'
     export default {
         data() {
             return {
-                data: '',
-                user: ''
             }
         },
-        created() {
-            this.ruta()
+        mounted () {
+            this.$store.dispatch('getRefreshToken')
         },
-        async mounted () {
+        watch: {
+            getToken(token) {
+                this.$store.dispatch('getUserInfo')
+            }
+        },
+        computed: {
+            getToken() {
+                return this.$store.state.refToken
+            },
+            getUserInfo() {
+                return this.$store.state.userInfo
+            }
         },
         methods: {
-            async ruta() {
-                try {
-                    const resToken = await fetch('http://localhost:3001/refresh-token', {
-                        method: 'GET',
-                        credentials: "include"
-                    })
-
-                    const {token} = await resToken.json()
-
-                    const res = await fetch('http://localhost:3001/dashboard', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': "application/json",
-                            Authorization: "Bearer " + token,
-                        },
-                    })
-
-                    const data = await res.json();
-                    this.user = data.user
-
-                } catch (err) {
-                    console.log(err)
-                }
-            },
             async cerrarSesion() {
                 try {
                     const res = await fetch('http://localhost:3001/logout', {

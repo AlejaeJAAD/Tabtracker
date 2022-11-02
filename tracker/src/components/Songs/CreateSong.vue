@@ -125,8 +125,10 @@
 <script>
     import Nav from '../Global/Nav.vue';
     import Panel from '@/components/Songs/Panel.vue'
-    import SongsService from '@/services/SongsService';
     export default {
+        components: {
+            Nav, Panel
+        },
         data () {
             return {
                 color: 'rgb(233, 69, 96)',
@@ -146,7 +148,7 @@
                 error: null,
                 required: (value) => !!value || 'Required',
                 dialog: false,
-                songData: null,
+                dataSong: null,
                 genres: [
                     {
                         title: 'Art (classical)',
@@ -177,25 +179,41 @@
             }
             
         },
+        created() {
+        },
         methods: {
             async createSong() {
-                console.log(this.song.genre)
+                console.log('al')
+                const resToken = await fetch('http://localhost:3001/refresh-token', {
+                method: 'GET',
+                credentials: "include"
+                })
+
+                const {token} = await resToken.json()
                 this.error = null
+
+                const reqSong = {
+                    artistName: this.song.artist,
+                    songName: this.song.title
+                }
+                console.log(reqSong)
 
                 //SONG DATA YT API
                 try {
-                    await SongsService.createdSongInfo({
-                        artistName: this.song.artist,
-                        songName: this.song.title
-                    }).then(res => {
-                        this.songData = res.data
-                        console.log(res.data)
+                    const songResult = await fetch('http://localhost:3001/createdSongInfo', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                        body: JSON.stringify(reqSong)
                     })
-                } catch(err) {
-                    console.log(err)
+                    this.dataSong = await songResult.json()
+                } catch (err) {
+                    console.log(console.error())
                 }
 
-                if(this.songData != null) {
+                if(this.dataSong != null) {
                     // const areAllFieldsFilledIn = Object
                     // .keys(this.song)
                     // .every(key => !!this.song[key])
@@ -228,15 +246,26 @@
 
 
                     //Autofill some fields with the info retrieved from API
-                    this.song.youtubeChannelId = this.songData.channelData.id
-                    this.song.albumImageUrl = this.songData.firstVideoSelectedData.snippet.thumbnails.high.url
-                    this.song.subscriberCount = this.songData.channelData.statistics.subscriberCount
-                    this.song.videoCount = this.songData.channelData.statistics.videoCount
-                    this.song.viewCount = this.songData.channelData.statistics.viewCount
-                    this.song.youtubeVideoId = this.songData.firstVideoSelectedData.id.videoId
+                    this.song.youtubeChannelId = this.dataSong.channelData.id
+                    this.song.albumImageUrl = this.dataSong.firstVideoSelectedData.snippet.thumbnails.high.url
+                    this.song.subscriberCount = this.dataSong.channelData.statistics.subscriberCount
+                    this.song.videoCount = this.dataSong.channelData.statistics.videoCount
+                    this.song.viewCount = this.dataSong.channelData.statistics.viewCount
+                    this.song.youtubeVideoId = this.dataSong.firstVideoSelectedData.id.videoId
 
                     try {
-                        await SongsService.post(this.song)
+                        const res = await fetch('http://localhost:3001/songs', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': "application/json",
+                                Authorization: "Bearer " + token,
+                            },
+                            body: JSON.stringify(this.song)
+                        })
+
+                        const data = await res.json()
+                        console.log(data)
+
                         this.$router.push({
                             name: 'songs'
                         })
@@ -250,17 +279,10 @@
             },
             closeOther(val, items) {
                 items.forEach((x, i) => {
-                    // console.log(items)
-                    // console.log(val)
-                    // console.log(val.subgenres)
-                    // console.log(i)
                     if(val.subgenres != i) x.subactive = false
                 })
             },
         },
-        components: {
-            Nav, Panel
-        }
     }
 </script>
 
