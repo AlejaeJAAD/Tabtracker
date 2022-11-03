@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="backGround">
     <v-main>
       <router-view/>
     </v-main>
@@ -18,3 +18,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.backGround {
+ background-color: rgba(19,19,19,255);
+ padding: 2rem;
+}
+</style>

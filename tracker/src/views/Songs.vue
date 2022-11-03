@@ -2,8 +2,8 @@
     <div>
         <Nav :color="color" style="margin-top: 2rem" />
         <v-row justify="center">
-            <v-col cols="11" align="center">
-                <panel title="Songs" color="rgb(22, 33, 62)">
+            <v-col cols="11" align="center" class="backGround01">
+                <panel title="Songs" color="#131313">
                     <router-link
                         slot="action"
                         :to="{name: 'songs-create'}"
@@ -20,8 +20,8 @@
                         </v-btn>
                     </router-link>
 
-                    <v-container class="song" v-for="song in songs"
-                        :key="song._id" fill-height style="padding:0px">
+                    <v-container v-for="song in songs" class="backGround02"
+                        :key="song._id">
                         <v-row no-gutters>
                             <v-col cols="4">
                                 <v-card class="crop" flat>
@@ -34,66 +34,76 @@
                                     <div class="song-genre">
                                         {{song.genre}}
                                     </div>
-                                    <v-btn
-                                        dark
-                                        color='rgb(233, 69, 96)'
-                                        :to="{name: 'view-song', params: {songId: song._id}}"    
-                                    >
-                                        Detail
-                                    </v-btn>
+                                    <div>
+                                        <v-btn
+                                            dark
+                                            outlined
+                                            :to="{name: 'view-song', params: {songId: song._id}}"    
+                                        >
+                                            Detail
+                                        </v-btn>
+                                    </div>
                                 </v-card>
                             </v-col>
 
                             <v-col cols="7" style="padding-bottom: 1.5rem" mx-auto>
-                                <v-card 
-                                    class="crop"
-                                    style="position: relative"
-                                    elevation="5"
-                                    height="180px">
-                                    <v-img :src="song.albumImageUrl"
-                                        class="white--text align-end"
-                                        width="100%"
-                                        max-height="100%"
-                                        style="object-fit: cover">
-                                        <v-btn
+                                <v-hover>
+                                    <template v-slot:default="{ hover }">
+                                        <v-card 
+                                            class="crop"
+                                            style="position: relative"
                                             elevation="5"
-                                            medium
-                                            absolute
-                                            top
-                                            left
-                                            color="white"
-                                            @click="downloadVideo(song.youtubeVideoId)"
-                                        >
-                                            <v-icon>mdi-download</v-icon>
-                                        </v-btn>
-                                    </v-img>
-                                    <v-row>
-                                        <v-col cols="12">
-                                            <v-card style="position: relative" color="transparent">
-                                                <v-card-actions>
-                                                    <v-btn left small class="white--text" color="#c4302b" @click="ytvideo(song.youtubeVideoId)">
-                                                        Watch Youtube Video <v-icon>mdi-youtube</v-icon>
-                                                    </v-btn>
-                                                    <v-dialog v-if="dialog" v-model="dialog" width="auto" align="center" persistent>
-                                                        <v-card height="100%">
-                                                            <youtube :video-id="youtubeID"></youtube>
-                                                            <v-card-actions>
-                                                                <v-spacer></v-spacer>
-                                                                <v-btn outlined color="black" style="margin: 1px" @click="stopVideo()">Close <v-icon>mdi-close</v-icon></v-btn>
-                                                            </v-card-actions>
-                                                        </v-card>
-                                                    </v-dialog>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                        outlined right small class="white--text" color="red"
-                                                    >
-                                                        Delete song <v-icon>mdi-delete</v-icon>
-                                                    </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
+                                            height="180px">
+                                            <v-fade-transition>
+                                                <v-overlay
+                                                    v-if="hover"
+                                                    absolute
+                                                    opacity="0.8"
+                                                >
+                                                <v-btn
+                                                    outlined
+                                                    color="white"
+                                                    @click="downloadVideo(song.youtubeVideoId)"
+                                                >
+                                                    Download video <v-icon>mdi-download</v-icon>
+                                                </v-btn>
+                                                </v-overlay>
+                                            </v-fade-transition>
+                                            <v-img :src="song.albumImageUrl"
+                                                class="white--text align-end"
+                                                width="100%"
+                                                max-height="100%"
+                                                style="object-fit: cover">
+                                            </v-img>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-card style="position: relative" color="transparent">
+                                                        <v-card-actions>
+                                                            <v-btn left small class="white--text" color="#c4302b" @click="ytvideo(song.youtubeVideoId)">
+                                                                Watch Youtube Video <v-icon>mdi-youtube</v-icon>
+                                                            </v-btn>
+                                                            <v-dialog v-if="dialog" v-model="dialog" width="auto" align="center" persistent>
+                                                                <v-card height="100%">
+                                                                    <youtube :video-id="youtubeID"></youtube>
+                                                                    <v-card-actions>
+                                                                        <v-spacer></v-spacer>
+                                                                        <v-btn outlined color="black" style="margin: 1px" @click="stopVideo()">Close <v-icon>mdi-close</v-icon></v-btn>
+                                                                    </v-card-actions>
+                                                                </v-card>
+                                                            </v-dialog>
+                                                            <v-spacer></v-spacer>
+                                                            <!-- <v-btn
+                                                                outlined right small class="white--text" color="red"
+                                                            >
+                                                                Delete song <v-icon>mdi-delete</v-icon>
+                                                            </v-btn> -->
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-col>
+                                            </v-row>
+                                        </v-card>
+                                    </template>
+                                </v-hover>
                             </v-col>
                         </v-row>
                         <v-divider></v-divider>
@@ -118,6 +128,7 @@
                 thumbnail: '',
                 youtubeID: null,
                 dialog: false,
+                overlay: false,
             }
         },
         created() {
@@ -175,6 +186,8 @@
 <style lang="scss" scoped>
 .crop {
     margin: 1.5rem;
+    background-color: #131313;
+    color: white
 }
 .song {
   padding: 20px;
@@ -196,5 +209,11 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2);
+ }
+ .backGround01 {
+    background-color: #464646;
+ }
+ .backGround02 {
+    background-color: #080606;
  }
 </style>
