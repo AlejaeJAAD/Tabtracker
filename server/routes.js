@@ -39,6 +39,10 @@ module.exports = (app) => {
         SongsController.index
     )
 
+    app.get('/getAllSongs',
+        SongsController.getAllSongs
+    )
+
     // Display song by ID
     app.get('/songs/:songId',
         SongsController.show

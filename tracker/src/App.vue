@@ -22,6 +22,5 @@ export default {
 <style lang="scss" scoped>
 .backGround {
  background-color: rgba(19,19,19,255);
- padding: 2rem;
 }
 </style>

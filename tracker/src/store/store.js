@@ -11,7 +11,8 @@ export default new Vuex.Store({
   state: {
     refToken: null,
     isUserLoggedIn: false,
-    userInfo: []
+    userInfo: [],
+    allSongs: ''
   },
   getters: {
 
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     },
     setUserInfo (state, payload) {
       state.userInfo = payload
+    },
+    setAllSongs (state, payload) {
+      state.allSongs = payload
     }
   },
   actions: {
@@ -36,6 +40,15 @@ export default new Vuex.Store({
     },
     setLogout ({commit}) {
       commit('setLogout')
+    },
+    async getAllsongs ({commit}) {
+      const resToken = await fetch('http://localhost:3001/getAllSongs', {
+        method: 'GET',
+        credentials: "include"
+      })
+
+      const destructuredData = await resToken.json()
+      commit('setAllSongs', destructuredData)
     },
     async getRefreshToken ({commit}) {
       const resToken = await fetch('http://localhost:3001/refresh-token', {

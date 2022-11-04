@@ -1,8 +1,8 @@
 <template>
-  <v-container class="bg01" fill-height>
-    <v-row justify="space-around">
-      <v-col cols="6">
-        <v-row class="">
+  <v-container class="bg01" style="padding: 1rem 0 1rem 0.3rem">
+    <v-row justify="space-around" no-gutters>
+      <v-col cols="5">
+        <v-row>
           <v-col cols="12">
             <v-card class="bg03">
               <v-row style="padding: 2rem">
@@ -58,11 +58,23 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <v-row>
           <v-col cols="12">
-            <v-card color="#080606" height="vh">
-              <h3>Other stuff</h3>
+            <v-card color="#080606" height="85vh" style="margin: 0 0.3rem -0.7rem 1rem">
+              <v-row justify="center">
+                <v-col cols="10">
+                  <template v-for="songs in getSongs">
+                    <v-card v-for="song in songs" :key="song._id" style="padding: 1rem" color="transparent" class="white--text">
+                      <h3>
+                        Song name: {{song.title}} <br>
+                        Artist name: {{song.artist}}
+                      </h3>
+                    </v-card>
+                  </template>
+                  <v-divider></v-divider>
+                </v-col>
+              </v-row>
             </v-card>
           </v-col>
         </v-row>
@@ -82,6 +94,14 @@
                 upload: false,
                 message: ''
             }
+        },
+        mounted () {
+          this.$store.dispatch('getAllsongs')
+        },
+        computed: {
+          getSongs() {
+            return this.$store.state.allSongs || []
+          }
         },
         methods: {
           fileInput(file) {
@@ -113,12 +133,14 @@
 <style lang="scss" scoped>
 .bg01 {    
   background-color: #464646;
+  margin-top: 2rem
 }
 .bg02 {
  background-color: #080606; 
 }
 .bg03 {
-  background-color: #131313
+  background-color: #131313;
+  margin: 1.7rem 0 0 0
 }
 
 </style>
