@@ -24,7 +24,9 @@
             }
         },
         mounted () {
-            this.$store.dispatch('getRefreshToken')
+            this.$nextTick(() => {
+                this.$store.dispatch('getRefreshToken')
+            })
         },
         watch: {
             getToken(token) {

@@ -16,6 +16,19 @@ module.exports = {
           })
         }
     },
+    async searchSong (req, res) {
+      try{
+        const findSong = req.params.songName;
+        const objs = await Song.find({title:{ $regex:'.*'+findSong+'.*', '$options' : 'i'}});
+        if(objs.length === 0) {
+          res.status(404).send({err: 'We couldnt find a song with that name registered'})
+        } else {
+          res.json(objs);
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
     async index (req, res) {
         try {
           const songs = await Song.find({

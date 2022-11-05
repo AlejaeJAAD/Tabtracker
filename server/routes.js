@@ -43,6 +43,10 @@ module.exports = (app) => {
         SongsController.getAllSongs
     )
 
+    app.get('/searchSong/:songName', requireToken,
+        SongsController.searchSong
+    )
+
     // Display song by ID
     app.get('/songs/:songId',
         SongsController.show

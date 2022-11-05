@@ -61,7 +61,7 @@
       <v-col cols="7">
         <v-row>
           <v-col cols="12">
-            <v-card color="#080606" height="85vh" style="margin: 0 0.3rem -0.7rem 1rem">
+            <v-card color="#080606" height="90vh" style="margin: 0 0.3rem -0.7rem 1rem">
               <v-row justify="center">
                 <v-col cols="10">
                   <template v-for="songs in getSongs">
@@ -80,6 +80,29 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-row justify="space-around" no-gutters>
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="12">
+            <v-card class="bg04">
+              <v-row style="padding: 2rem">
+                  <v-col cols="12" class="mt-12 pt-md-6" align="center">
+                    <h3>Search song</h3>
+                    <v-text-field dark v-model="songName" solo placeholder="Enter song name" label="Song Name">
+                    </v-text-field>
+                    <v-btn black outlined @click="searchSong(songName)">Search song</v-btn>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-card v-for="query in getQuery" :key="query._id">
+                      {{query}}
+                    </v-card>
+                  </v-col>
+                </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -92,15 +115,27 @@
                 processing: false,
                 fileUrl: null,
                 upload: false,
-                message: ''
+                message: '',
+                songName: ''
             }
         },
         mounted () {
-          this.$store.dispatch('getAllsongs')
+          this.$nextTick(() => {
+            this.$store.dispatch('getRefreshToken')
+            this.$store.dispatch('getAllsongs')
+            setInterval(() => {
+              this.$store.dispatch('getRefreshToken')
+              this.$store.dispatch('getAllsongs')
+              console.log('Test')
+            }, 20 * 1000);
+          })
         },
         computed: {
           getSongs() {
             return this.$store.state.allSongs || []
+          },
+          getQuery() {
+            return this.$store.state.queryData
           }
         },
         methods: {
@@ -125,6 +160,13 @@
             } finally {
               this.processing = false;
             }
+          },
+          async searchSong(query) {
+            try {
+              await this.$store.dispatch('getQueryData', query)
+            } catch (err) {
+              console.log(err)
+            }
           }
         }
     }
@@ -133,7 +175,8 @@
 <style lang="scss" scoped>
 .bg01 {    
   background-color: #464646;
-  margin-top: 2rem
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 .bg02 {
  background-color: #080606; 
@@ -141,6 +184,10 @@
 .bg03 {
   background-color: #131313;
   margin: 1.7rem 0 0 0
+}
+.bg04 {
+  background-color: #131313;
+  margin: 1.7rem 0.3rem 0 0
 }
 
 </style>

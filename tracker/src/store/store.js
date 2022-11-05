@@ -11,8 +11,9 @@ export default new Vuex.Store({
   state: {
     refToken: null,
     isUserLoggedIn: false,
-    userInfo: [],
-    allSongs: ''
+    userInfo: null,
+    allSongs: null,
+    queryData: null
   },
   getters: {
 
@@ -32,6 +33,9 @@ export default new Vuex.Store({
     },
     setAllSongs (state, payload) {
       state.allSongs = payload
+    },
+    setQueryData (state, payload) {
+      state.queryData = payload
     }
   },
   actions: {
@@ -70,7 +74,18 @@ export default new Vuex.Store({
 
       const destructuredData = await res.json();
       commit('setUserInfo', destructuredData)
-      
+    },
+    async getQueryData ({commit}, query) {
+      const res = await fetch(`http://localhost:3001/searchSong/${query}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': "application/json",
+          Authorization: "Bearer " + this.state.refToken,
+        }
+      })
+
+      const destructuredData = await res.json();
+      commit('setQueryData', destructuredData)
     }
   },
   modules: {
