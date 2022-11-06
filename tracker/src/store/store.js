@@ -13,7 +13,7 @@ export default new Vuex.Store({
     isUserLoggedIn: false,
     userInfo: null,
     allSongs: null,
-    queryData: null
+    queryData: ''
   },
   getters: {
 
@@ -85,7 +85,11 @@ export default new Vuex.Store({
       })
 
       const destructuredData = await res.json();
-      commit('setQueryData', destructuredData)
+      if(destructuredData.length === 0) {
+        commit('setQueryData', null)
+      } else {
+        commit('setQueryData', destructuredData)
+      }
     }
   },
   modules: {

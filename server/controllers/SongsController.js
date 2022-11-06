@@ -19,12 +19,18 @@ module.exports = {
     async searchSong (req, res) {
       try{
         const findSong = req.params.songName;
-        const objs = await Song.find({title:{ $regex:'.*'+findSong+'.*', '$options' : 'i'}});
-        if(objs.length === 0) {
-          res.status(404).send({err: 'We couldnt find a song with that name registered'})
-        } else {
-          res.json(objs);
-        }
+        //const objs = await Song.find({title:{ $regex:'.*'+findSong+'.*', '$options' : 'i'}}).limit(2)
+
+        const objs = await Song.aggregate([
+          {$match:
+            {title:{ $regex:'.*'+findSong+'.*', '$options' : 'i'}}
+          },
+          { $sample: 
+            { size: 2 }
+          }
+        ])
+
+        res.status(200).json(objs);
       } catch (err) {
         console.log(err)
       }

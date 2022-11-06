@@ -85,18 +85,36 @@
         <v-row>
           <v-col cols="12">
             <v-card class="bg04">
-              <v-row style="padding: 2rem">
-                  <v-col cols="12" class="mt-12 pt-md-6" align="center">
-                    <h3>Search song</h3>
-                    <v-text-field dark v-model="songName" solo placeholder="Enter song name" label="Song Name">
-                    </v-text-field>
-                    <v-btn black outlined @click="searchSong(songName)">Search song</v-btn>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-card v-for="query in getQuery" :key="query._id">
-                      {{query}}
-                    </v-card>
-                  </v-col>
+              <v-row style="padding: 2rem" no-gutters>
+                <v-col cols="12">
+                  <v-row justify="center" style="margin-bottom: -3rem">
+                    <v-col class="text-center" cols="5">
+                      <v-text-field outlined color="white" dark v-model="songName" solo placeholder="Write the song name" label="Song name">
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row justify="center">
+                    <v-col cols="5" align="center">
+                      <v-btn class="white--text" black outlined @click="searchSong(songName)">Search song</v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-row justify="center">
+                    <v-col cols="5" v-if="resultFromQuery != null">
+                      <v-sheet outlined color="#464646" rounded>
+                        <v-card v-for="query in getQuery" :key="query._id" style="padding: 1rem; margin: 0.1rem" color="black" class="white--text" outlined elevation="1">
+                          {{query.artist}} - {{query.title}}
+                        </v-card>
+                      </v-sheet>
+                    </v-col>
+                    <v-col cols="5" v-if="resultFromQueryError">
+                      <div>
+                        <v-alert color="white" icon="mdi-alert" outlined border="left">
+                          {{errorMessage}}
+                        </v-alert>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-col>
                 </v-row>
             </v-card>
           </v-col>
@@ -116,7 +134,10 @@
                 fileUrl: null,
                 upload: false,
                 message: '',
-                songName: ''
+                songName: '',
+                errorMessage: "We couldn't find a song with that name registered",
+                resultFromQuery: null,
+                resultFromQueryError: false
             }
         },
         mounted () {
@@ -126,7 +147,6 @@
             setInterval(() => {
               this.$store.dispatch('getRefreshToken')
               this.$store.dispatch('getAllsongs')
-              console.log('Test')
             }, 20 * 1000);
           })
         },
@@ -164,6 +184,14 @@
           async searchSong(query) {
             try {
               await this.$store.dispatch('getQueryData', query)
+              setTimeout(() => {
+                this.resultFromQuery = this.$store.state.queryData
+                if(!this.resultFromQuery) {
+                  this.resultFromQueryError = true
+                } else {
+                  this.resultFromQueryError = false
+                }
+              }, 500);
             } catch (err) {
               console.log(err)
             }
@@ -187,7 +215,14 @@
 }
 .bg04 {
   background-color: #131313;
-  margin: 1.7rem 0.3rem 0 0
+  margin: 1.7rem 0.3rem -0.7rem 0;
 }
-
+.centered-input.v-text-field .v-label {
+  left: 50% !important;
+  transform: translateX(-50%);
+  transform-origin: top 50%;
+  &.v-label--active {
+    transform: translateY(-18px) scale(.75) translateX(-50%);
+  }
+}
 </style>
