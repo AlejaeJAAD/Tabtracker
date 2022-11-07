@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
+  fileURL: {
+    type: String,
+    required: true
+  },
   fullName: {
     type: String,
     required: [true, "fullname not provided "],

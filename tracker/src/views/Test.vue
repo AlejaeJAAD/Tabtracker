@@ -42,7 +42,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-row justify="center" align="center">
-                    <v-col cols="8">
+                    <v-col cols="10">
                       <v-img :src="fileUrl" contain v-if="fileUrl" max-height="750"></v-img>
                     </v-col>
                   </v-row>
@@ -106,9 +106,9 @@
                         </v-card>
                       </v-sheet>
                     </v-col>
-                    <v-col cols="5" v-if="resultFromQueryError">
+                    <v-col cols="7" v-if="resultFromQueryError" class="text-center">
                       <div>
-                        <v-alert color="white" icon="mdi-alert" outlined border="left">
+                        <v-alert color="white" icon="mdi-alert" outlined border="left" class="pre-formatted">
                           {{errorMessage}}
                         </v-alert>
                       </div>
@@ -118,7 +118,7 @@
                 </v-row>
             </v-card>
           </v-col>
-        </v-row>
+        </v-row>W
       </v-col>
     </v-row>
   </v-container>
@@ -132,10 +132,11 @@
                 myFile: null,
                 processing: false,
                 fileUrl: null,
+                containsImage: false,
                 upload: false,
                 message: '',
                 songName: '',
-                errorMessage: "We couldn't find a song with that name registered",
+                errorMessage: "We couldn't find a song with that name registered\nWrite the song name again",
                 resultFromQuery: null,
                 resultFromQueryError: false
             }
@@ -160,7 +161,13 @@
         },
         methods: {
           fileInput(file) {
-            this.fileUrl = URL.createObjectURL(file)
+            if(file != null) {
+              this.containsImage = true
+              this.fileUrl = URL.createObjectURL(file)
+            } else {
+              this.fileUrl = null
+              this.containsImage = false
+            }
           },
           async uploadImage(file) {
             this.processing = true
@@ -191,7 +198,7 @@
                 } else {
                   this.resultFromQueryError = false
                 }
-              }, 500);
+              }, 500)
             } catch (err) {
               console.log(err)
             }
@@ -224,5 +231,8 @@
   &.v-label--active {
     transform: translateY(-18px) scale(.75) translateX(-50%);
   }
+}
+.pre-formatted {
+  white-space: pre;
 }
 </style>

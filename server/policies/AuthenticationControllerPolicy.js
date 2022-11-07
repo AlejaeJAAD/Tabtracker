@@ -3,6 +3,7 @@ const Joi = require('joi')
 module.exports = {
     register(req, res, next) {
         const schema = Joi.object({
+            fileURL: Joi.string(),
             fullName: Joi.string(),
             email: Joi.string().email(),
             password: Joi.string().regex(

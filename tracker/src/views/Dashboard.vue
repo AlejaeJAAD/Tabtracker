@@ -11,6 +11,7 @@
             </div>
         </div>
         <div class="white--text" v-for="user in getUserInfo" :key=user._id>
+            <v-img :src="user.fileURL" width="200px"></v-img>
             Bienvenido {{user.fullName}}
             <v-btn @click="cerrarSesion">Cerrar sesion</v-btn>
         </div>

@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const Joi = require('@hapi/joi');
 
 const schemaRegister = Joi.object({
+  fileURL: Joi.string().min(4).max(255).required(),
   fullName: Joi.string().min(4).max(255).required(),
   email: Joi.string().min(6).max(255).required().email(),
   password: Joi.string().min(6).max(1024).required(),
@@ -40,6 +41,7 @@ module.exports = {
 
           //New user
           const user = new User({
+            fileURL: req.body.fileURL,
             fullName: req.body.fullName,
             email: req.body.email,
             role: req.body.role,

@@ -62,7 +62,11 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
-    meta: {requiresAuth: true}
+    meta: 
+      { 
+        title: 'JAAD - Dashboard',
+        requiresAuth: true
+      }
   },
   {
     path: '/test',
@@ -79,6 +83,11 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isLoggedin = store.state.isUserLoggedIn
+  const DEFAULT_TITLE = 'JAAD';
+
+  Vue.nextTick(() => {
+    document.title = to.meta.title || DEFAULT_TITLE;
+  })
   
   if (to.matched.some(route => route.meta.requiresAuth)) {
     if(!isLoggedin) {
