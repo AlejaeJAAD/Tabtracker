@@ -118,7 +118,7 @@
                 </v-row>
             </v-card>
           </v-col>
-        </v-row>W
+        </v-row>
       </v-col>
     </v-row>
   </v-container>

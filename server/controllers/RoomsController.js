@@ -3,14 +3,10 @@ const Room = require('../models/Room');
 module.exports = {
     //GET ALL ROOMS
     async getRooms(req, res, next) {
-        try {
-            await Room.find(function (err, products) {
-                if (err) return next(err)
-                res.json(products)
-            })
-        } catch (err) {
-            console.log(err)
-        }
+        await Room.find(function (err, products) {
+            if (err) {return next(err)}
+            res.json(products)
+        }).clone().catch(function(err){ console.log(err)})
     },
     //GET A ROOM BY ID
     async getRoomById(req, res, next) {

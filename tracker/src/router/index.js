@@ -12,6 +12,11 @@ import Dashboard from '@/views/Dashboard.vue'
 import Landing from '@/views/Landing.vue'
 import store from '@/store/store.js'
 
+import RoomList from '@/components/Rooms/RoomList'
+import AddRoom from '@/components/Rooms/AddRoom'
+import JoinRoom from '@/components/Rooms/JoinRoom'
+import ChatRoom from '@/components/Rooms/ChatRoom'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -67,6 +72,26 @@ const routes = [
         title: 'JAAD - Dashboard',
         requiresAuth: true
       }
+  },
+  {
+    path: '/room-list',
+    name: 'RoomList',
+    component: RoomList
+  },
+  {
+    path: '/add-room',
+    name: 'AddRoom',
+    component: AddRoom
+  },
+  {
+    path: '/join-room/:id',
+    name: 'JoinRoom',
+    component: JoinRoom
+  },
+  {
+    path: '/chat-room/:id/:nickname',
+    name: 'ChatRoom',
+    component: ChatRoom
   },
   {
     path: '/test',

@@ -90,11 +90,11 @@ module.exports = (app) => {
     )
 
     //Socket
-    app.get('/rooms', requireToken,
+    app.get('/rooms',
         getRooms
     )
 
-    app.get('/rooms/:id', requireToken,
+    app.get('/rooms/:id',
         getRoomById
     )
 
@@ -102,11 +102,11 @@ module.exports = (app) => {
         createRoom
     )
 
-    app.patch('/rooms/:id', requireToken,
+    app.patch('/rooms/:id',
         updateRoom
     )
     
-    app.delete('/rooms/:id', requireToken,
+    app.delete('/rooms/:id',
         deleteRoom
     )
 }

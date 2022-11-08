@@ -18,6 +18,7 @@
     "secure-ls": "^1.2.6",
     "uuid": "^9.0.0",
     "uuidv4": "^6.2.13",
+    "vee-validate": "^3.4.14",
     "vue": "^2.6.14",
     "vue-cookies": "^1.8.2",
     "vue-router": "^3.5.1",
