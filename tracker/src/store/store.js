@@ -24,6 +24,8 @@ export default new Vuex.Store({
     },
     setLogout (state) {
       state.isUserLoggedIn = false
+      state.refToken = null
+      state.userInfo = null
     },
     setRefToken (state, payload) {
       state.refToken = payload.token
@@ -97,7 +99,9 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: [
-        'isUserLoggedIn',
+        "refToken",
+        "isUserLoggedIn",
+        "userInfo",
       ],
       storage: {
         getItem: (key) => ls.get(key),

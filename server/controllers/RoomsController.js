@@ -5,7 +5,16 @@ module.exports = {
     async getRooms(req, res, next) {
         await Room.find(function (err, products) {
             if (err) {return next(err)}
-            res.json(products)
+
+            const modifiedProducts = products.map(product => ({
+                _id: product._id,
+                room_name: product.room_name,
+                created_date: product.created_date.toDateString()
+            }));
+            
+
+            res.status(200).json(modifiedProducts)
+            
         }).clone().catch(function(err){ console.log(err)})
     },
     //GET A ROOM BY ID

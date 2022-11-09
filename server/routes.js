@@ -11,6 +11,7 @@ const requireRefreshToken = require('./middlewares/requireRefreshToken')
 //Links
 const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
 const {getRooms, getRoomById, createRoom, updateRoom, deleteRoom} = require('./controllers/RoomsController')
+const {getChats, getChatById, createChat, updateChat, deleteChat} = require('./controllers/ChatController')
 
 module.exports = (app) => {
     // Register route
@@ -108,5 +109,26 @@ module.exports = (app) => {
     
     app.delete('/rooms/:id',
         deleteRoom
+    )
+
+    //CHATS
+    app.get('/chats',
+        getChats
+    )
+
+    app.get('/chats/:id',
+        getChatById
+    )
+
+    app.post('/chats',
+        createChat
+    )
+
+    app.patch('/chats/:id',
+        updateChat
+    )
+
+    app.delete('/chats/:id',
+        deleteChat
     )
 }
