@@ -1,4 +1,5 @@
 const Room = require('../models/Room');
+const helpers = require("./helpers")
 
 module.exports = {
     //GET ALL ROOMS
@@ -58,7 +59,11 @@ module.exports = {
         try {
             Room.findByIdAndRemove(req.params.id, req.body, function (err, post) {
                 if (err) return next(err)
-                res.json(post)
+                // res.json(post)
+            })
+            helpers.getRoomId(req.params.id);
+            res.status(200).json({
+                message: 'Room has been deleted successfully with all the chats'
             })
         } catch (err) {
             console.log(err)

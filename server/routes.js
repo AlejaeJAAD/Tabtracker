@@ -2,7 +2,6 @@ const AuthenticationController = require('./controllers/AuthenticationController
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 const SongsController = require('./controllers/SongsController')
 const YTDownloaderController = require('./controllers/YTDownloaderController')
-const ChatController = require('./controllers/ChatController')
 
 //Validate token
 const requireToken = require('./middlewares/requireToken')
@@ -12,6 +11,8 @@ const requireRefreshToken = require('./middlewares/requireRefreshToken')
 const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
 const {getRooms, getRoomById, createRoom, updateRoom, deleteRoom} = require('./controllers/RoomsController')
 const {getChats, getChatById, createChat, updateChat, deleteChat} = require('./controllers/ChatController')
+
+const {getMusicData} = require('./controllers/MusicController')
 
 module.exports = (app) => {
     // Register route
@@ -130,5 +131,9 @@ module.exports = (app) => {
 
     app.delete('/chats/:id',
         deleteChat
+    )
+
+    app.get('/musicData',
+        getMusicData
     )
 }

@@ -125,7 +125,6 @@
             Axios.get(`http://localhost:3001/rooms`)
             .then(res => {
                 this.rooms = res.data
-                console.log(this.rooms)
             })
             .catch(e => {
                 this.errors.push(e)
@@ -150,15 +149,17 @@
             },
             deleteItemConfirm (room_id) {
                 Axios.delete(`http://localhost:3001/rooms/${room_id}`)
-                .then(() => {
-                    this.successMessage = 'Room deleted successfully'
+                .then((res) => {
+                    console.log(res)
+                    this.successMessage = res.data.message
+                    //this.successMessage = 'Room deleted successfully'
                 })
                 this.rooms.splice(this.editedIndex, 1)
                 this.closeDelete()
                 this.message = true
                 setTimeout(() => {
                     this.message = false
-                }, 1000);
+                }, 1500);
             },
             closeDelete () {
                 this.dialogDelete = false

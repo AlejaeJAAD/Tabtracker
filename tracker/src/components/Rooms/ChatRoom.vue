@@ -64,6 +64,7 @@
             Axios.get(`http://localhost:3001/chats/` + this.$route.params.id)
             .then(res => {
                 this.chats = res.data
+                console.log(res.data)
             })
             .catch(e => {
                 this.errors.push(e)

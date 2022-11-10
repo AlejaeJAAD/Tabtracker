@@ -1,4 +1,4 @@
-const Chat = require('../models/Chat');
+const Chat = require('../models/Chat')
 
 module.exports = {
     async getChats (req, res, next) {
@@ -11,19 +11,22 @@ module.exports = {
 
     //GET A CHAT BY ID
     async getChatById (req, res, next) {
-        await Chat.find({room: req.params.id}, function (err, post) {
-            if (err) {return next(err)}
-            const modifiedPost = post.map(post => ({
-                _id: post._id,
-                room: post.room,
-                nickname: post.nickname,
-                message: post.message,
-                created_date: post.created_date.toDateString()
+        try {
+            const chats = await Chat.find({room: req.params.id})
+            const modifiedChats = chats.map(chats => ({
+                _id: chats._id,
+                room: chats.room,
+                nickname: chats.nickname,
+                message: chats.message,
+                created_date: chats.created_date.toDateString()
             }));
-            
 
-            res.status(200).json(modifiedPost)
-        }).clone().catch(function(err){ console.log(err)})
+            res.status(200).json(modifiedChats)
+        } catch (err) {
+            res.status(500).send({
+                error: 'An error has occured trying to fetch the chats for that room'
+            })
+        }
     },
 
     //Create chat
@@ -44,9 +47,18 @@ module.exports = {
 
     //Delete chat
     async deleteChat (req, res, next) {
-        Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+        await Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
             if (err) return next(err)
             res.json(post)
         })
+    },
+
+    async deleteAllChatsFromId (id) {
+        try {
+            const result = await Chat.deleteMany({room: id})
+            return result
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
