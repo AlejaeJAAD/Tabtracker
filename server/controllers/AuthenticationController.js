@@ -9,10 +9,17 @@ const Joi = require('@hapi/joi');
 
 const schemaRegister = Joi.object({
   fileURL: Joi.string().min(4).max(255).required(),
-  fullName: Joi.string().min(4).max(255).required(),
-  email: Joi.string().min(6).max(255).required().email(),
+  firstName: Joi.string().min(4).max(100).required(),
+  lastName: Joi.string().min(4).max(100).required(),
+  nickName: Joi.string().min(3).max(20).required(),
+  phone: Joi.number().required(),
+  city: Joi.string().min(3).max(25).required(),
+  state: Joi.string().min(3).max(25).required(),
+  country: Joi.string().min(3).max(25).required(),
+  birthDate: Joi.date().required(),
+  email: Joi.string().min(6).max(100).required().email(),
   password: Joi.string().min(6).max(1024).required(),
-  role: Joi.string().min(5).max(255).required()
+  role: Joi.string().min(5).max(20).required(),
 })
 
 const schemaLogin = Joi.object({
@@ -42,10 +49,17 @@ module.exports = {
           //New user
           const user = new User({
             fileURL: req.body.fileURL,
-            fullName: req.body.fullName,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            nickName: req.body.nickName,
+            phone: req.body.phone,
+            city: req.body.city,
+            state: req.body.state,
+            country: req.body.country,
+            birthDate: req.body.birthDate,
             email: req.body.email,
-            role: req.body.role,
             password: password,
+            role: req.body.role,
           });
           //Saving to MongoDB
           await user.save()

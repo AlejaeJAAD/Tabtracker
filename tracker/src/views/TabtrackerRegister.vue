@@ -11,9 +11,10 @@
                                 autocomplete="off"
                             >
                             <br>
+                            <!-- color="#e2640f" -->
                             <v-file-input
                                 show-size
-                                color="#e2640f"
+                                color="black"
                                 v-model="myFile"
                                 outlined
                                 accept="image/png, image/jpeg"

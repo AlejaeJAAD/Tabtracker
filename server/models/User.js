@@ -5,9 +5,37 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  fullName: {
+  firstName: {
     type: String,
-    required: [true, "fullname not provided "],
+    required: [true, "firstName not provided "],
+  },
+  lastName: {
+    type: String,
+    required: [true, "lastName not provided "],
+  },
+  nickName: {
+    type: String,
+    required: [true, "nickName not provided "],
+  },
+  phone: {
+    type: Number,
+    required: [true, "phone not provided "],
+  },
+  city: {
+    type: String,
+    required: [true, "city not provided "],
+  },
+  state: {
+    type: String,
+    required: [true, "state not provided "],
+  },
+  country: {
+    type: String,
+    required: [true, "country not provided "],
+  },
+  birthDate: {
+    type: String,
+    required: [true, 'birthDate not provided']
   },
   email: {
     type: String,
@@ -21,23 +49,19 @@ const userSchema = mongoose.Schema({
       },
       message: '{VALUE} is not a valid email!'
     }
-
-  },
-  role: {
-    type: String,
-    enum: ["normal", "admin"],
-    required: [true, 
-      "Please specify user role"
-    ]
   },
   password: {
     type: String,
     required: true
   },
-  created: {
-    type: Date,
-    default: Date.now
-  }
+  role: {
+    type: String,
+    enum: ["Normal", "Admin"],
+    required: [true, 
+      "Please specify user role"
+    ]
+  },
+  created_date: { type: Date, default: Date.now },
 })
 
 module.exports = mongoose.model('User', userSchema)
