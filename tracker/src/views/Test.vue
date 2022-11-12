@@ -122,176 +122,307 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center">
-      <v-col cols="12">
-        <v-row no-gutters>
-          <v-col cols="6">
-            <v-card ref="form">
-              <v-card-text>
-                <v-row justify="center">
-                  <v-col cols="11">
-                    <v-card-title primary-title class="justify-left cardTitle01">
-                      General Information
-                    </v-card-title>
-                  </v-col>
-                  <v-col cols="5">
-                    <!-- //FIRSTNAME -->
-                    <v-text-field 
-                      v-model="user.firstName"
-                      :rules="[() => !!user.firstName || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="First Name"
-                      placeholder="My First Name"
-                      required
+    <v-row justify="center" no-gutters>
+      <v-col cols="6">
+        <v-card ref="form" tile flat height="100%" class="rounded-lg">
+          <v-card-text>
+            <v-row justify="center">
+              <v-col cols="11">
+                <v-card-title primary-title class="justify-left cardTitle01">
+                  General Information
+                </v-card-title>
+              </v-col>
+              <!-- //IMAGE -->
+              <v-col cols="10">
+                <v-file-input
+                  dense
+                  solo
+                  show-size
+                  color="black"
+                  v-model="myFile"
+                  outlined
+                  accept="image/png, image/jpeg"
+                  label="Image input"
+                  prepend-icon="mdi-image"
+                  @change="fileInput"
+                  :disabled="processing"
+                >
+                  <template v-slot:selection="{ text }">
+                    <v-chip
+                      color="black"
+                      label
+                      small
+                      outlined
                     >
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="5">
-                    <!-- //LASTNAME -->
-                    <v-text-field 
-                      v-model="user.lastName"
-                      :rules="[() => !!user.lastName || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="Last Name"
-                      placeholder="My Last Name"
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
-
+                      {{ text }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:append-outer>
+                    <v-progress-circular
+                      v-if="processing"
+                      color="grey"
+                      indeterminate
+                      small
+                    />
+                  </template>
+                </v-file-input>
+                <v-row justify="center" align="center">
                   <v-col cols="10">
-                    <!-- //NICKNAME -->
-                    <v-text-field 
-                      v-model="user.nickname"
-                      :rules="[() => !!user.nickname || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="Nickname"
-                      placeholder="Nick001"
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="10">
-                    <!-- //ROLE -->
-                    <v-text-field
-                      v-model="user.role"
-                      label="Role"
-                      disabled
-                    >
-                    </v-text-field>
+                    <v-img :src="user.fileURL" contain v-if="user.fileURL" max-height="185"></v-img>
                   </v-col>
                 </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
+              </v-col>
 
-          <v-col>
-            <v-card class="rightFormCard white--text">
-              <v-card-text>
-                <v-row justify="center">
-                  <v-col cols="11">
-                    <v-card-title primary-title class="justify-left cardTitle02">
-                      Personal Information
-                    </v-card-title>
-                  </v-col>
-                  <v-col cols="10">
-                    <!-- //PHONE -->
-                    <v-text-field 
-                      dark
-                      v-model="user.phone"
-                      :rules="[() => !!user.phone || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="Phone Number"
-                      placeholder="00 11 22 33 44"
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
+              <v-col cols="5">
+                <!-- //FIRSTNAME -->
+                <v-text-field
+                  dense
+                  solo
+                  v-model="user.firstName"
+                  :rules="[() => !!user.firstName || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="First Name"
+                  placeholder="My First Name"
+                  required
+                >
+                </v-text-field>
+              </v-col>
 
-                  <v-col cols="5">
-                    <!-- //CITY -->
+              <v-col cols="5">
+                <!-- //LASTNAME -->
+                <v-text-field 
+                  dense
+                  solo
+                  v-model="user.lastName"
+                  :rules="[() => !!user.lastName || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="Last Name"
+                  placeholder="My Last Name"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+
+              <!-- //BIRTHDAY -->
+              <v-col cols="10">
+                <v-menu
+                  dense
+                  solo
+                  ref="menu"
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      dark
-                      v-model="user.city"
-                      :rules="[() => !!user.city || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="City"
-                      placeholder="City001"
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
+                      v-model="user.birthDate"
+                      :value="computedDateFormattedMomentjs"
+                      clearable
+                      label="Birthdate"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      @click:clear="date = null"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    elevation="4"
+                    color="rgba(74,52,212,255)"
+                    v-model="user.birthDate"
+                    :active-picker.sync="activePicker"
+                    :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                    min="1950-01-01"
+                    @change="save"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
 
-                  <v-col cols="5">
-                    <!-- //STATE -->
-                    <v-text-field
-                      dark
-                      v-model="user.state"
-                      :rules="[() => !!user.state || 'This field is required']"
-                      :error-messages="errorMessages"
-                      label="State"
-                      placeholder="State001"
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
+              <v-col cols="7">
+                <!-- //NICKNAME -->
+                <v-text-field 
+                  dense
+                  solo
+                  v-model="user.nickName"
+                  :rules="[() => !!user.nickName || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="Nickname"
+                  placeholder="Nick001"
+                  required
+                >
+                </v-text-field>
+              </v-col>
 
-                  <v-col cols="10">
-                    <!-- //COUNTRY -->
-                    <v-autocomplete
-                      dark
-                      v-model="user.country"
-                      :rules="[() => !!user.country || 'This field is required']"
-                      :items="countries"
-                      label="Country"
-                      placeholder="Select..."
-                      required
-                    ></v-autocomplete>
-                  </v-col>
+              <v-col cols="3">
+                <!-- //ROLE -->
+                <v-text-field
+                  dense
+                  solo
+                  v-model="user.role"
+                  label="Role"
+                  disabled
+                >
+                </v-text-field>
+              </v-col>
 
-                  <v-col cols="10">
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          dark
-                          v-model="date"
-                          label="Birthday date"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        color="rgba(74,52,212,255)"
-                        v-model="date"
-                        :active-picker.sync="activePicker"
-                        :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-                        min="1950-01-01"
-                        @change="save"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+              <!-- //EMAIL -->
+              <v-col cols="10">
+                <v-text-field 
+                  dense
+                  solo
+                  v-model="user.email"
+                  :rules="[() => !!user.email || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="Email"
+                  placeholder="email@example.com"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+              
+              <!-- //PASSWORD -->
+              <v-col cols="10">
+                <v-text-field
+                  dense
+                  solo
+                  v-model="user.password"
+                  :error-messages="errorMessages"
+                  placeholder="examplePassword"
+                  :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :rules="[rules.required, rules.min]"
+                  :type="show3 ? 'text' : 'password'"
+                  name="input-10-2"
+                  label="Password"
+                  hint="At least 6 characters"
+                  class="input-group--focused"
+                  @click:append="show3 = !show3"
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols=6>
+        <v-card class="rightFormCard rounded-lg white--text" tile flat height="100%">
+          <v-card-text>
+            <v-row justify="center">
+              <v-col cols="11">
+                <v-card-title primary-title class="justify-left cardTitle02">
+                  Personal Information
+                </v-card-title>
+              </v-col>
+              <v-col cols="10">
+                <!-- //PHONE -->
+                <v-text-field 
+                  dense
+                  dark
+                  v-model="user.phone"
+                  :rules="[() => !!user.phone || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="Phone Number"
+                  placeholder="00 11 22 33 44"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="5">
+                <!-- //CITY -->
+                <v-text-field
+                  dense
+                  dark
+                  v-model="user.city"
+                  :rules="[() => !!user.city || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="City"
+                  placeholder="City001"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="5">
+                <!-- //STATE -->
+                <v-text-field
+                  dense
+                  dark
+                  v-model="user.state"
+                  :rules="[() => !!user.state || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="State"
+                  placeholder="State001"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="7">
+                <!-- //COUNTRY -->
+                <v-autocomplete
+                  dense
+                  dark
+                  v-model="user.country"
+                  :rules="[() => !!user.country || 'This field is required']"
+                  :items="countries"
+                  label="Country"
+                  placeholder="Select..."
+                  required
+                ></v-autocomplete>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  dense
+                  dark
+                  v-model="user.postalCode"
+                  :rules="[() => !!user.postalCode || 'This field is required']"
+                  :error-messages="errorMessages"
+                  label="Postal Code"
+                  placeholder="Postal Code001"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-spacer></v-spacer>
+          <v-row class=justifyContent>
+            <v-col cols="2">
+              <v-card-actions>
+                <v-btn
+                  dark
+                  outlined
+                  color="rgb(22, 33, 62)"
+                  class="white--text"
+                  @click="register"
+                >
+                  Register
+                </v-btn>
+              </v-card-actions>
+            </v-col>
+
+            <v-col cols="12">
+              <v-alert v-if='error'
+                border="right"
+                icon="$mdiVuetify"
+                type="error"
+                v-html="error"
+              >
+              </v-alert>
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+    import AuthenticationService from '@/services/AuthenticationService'
     import {uploadFile} from '../services/firebase'
     export default {
         data() {
@@ -301,6 +432,7 @@
                 fileUrl: null,
                 containsImage: false,
                 upload: false,
+                error: '',
                 message: '',
                 songName: '',
                 errorMessage: "We couldn't find a song with that name registered\nWrite the song name again",
@@ -315,6 +447,7 @@
                   city: '',
                   state: '',
                   country: '',
+                  postalCode: '',
                   birthDate: '',
                   email: '',
                   password: '',
@@ -346,6 +479,11 @@
                 activePicker: null,
                 date: null,
                 menu: false,
+                rules: {
+                  required: value => !!value || 'This field is required',
+                  min: v => v.length >= 6 || 'Min 6 characters',
+                },
+                show3: false,
             }
         },
         watch: {
@@ -369,36 +507,39 @@
           },
           getQuery() {
             return this.$store.state.queryData
-          }
+          },
+          computedDateFormattedMomentjs () {
+            return this.date ? moment(this.date).format('dddd, MMMM Do YYYY') : ''
+          },
         },
         methods: {
           fileInput(file) {
-            if(file != null) {
-              this.containsImage = true
-              this.fileUrl = URL.createObjectURL(file)
-            } else {
-              this.fileUrl = null
-              this.containsImage = false
-            }
+              if(file != null) {
+                    this.containsImage = true
+                    this.user.fileURL = URL.createObjectURL(file)
+              } else {
+                    this.user.fileURL = null
+                    this.containsImage = false
+              }
           },
           async uploadImage(file) {
-            this.processing = true
-            try {
-              const imageURL = await uploadFile(file)
-              if(imageURL) {
-                this.processing = false
-                this.fileURL = imageURL.fileURL
-                this.message = imageURL.message
-                this.myFile = null
-                setTimeout(() => {
-                  this.message = ''
-                }, 1000);
+              this.processing = true
+              try {
+                  const imageURL = await uploadFile(file)
+                  if(imageURL) {
+                      this.processing = false
+                      this.user.fileURL = imageURL.fileURL
+                      this.message = imageURL.message
+                      this.myFile = null
+                      setTimeout(() => {
+                      this.message = ''
+                      }, 1000);
+                  }
+              } catch (e) {
+                  console.error(e);
+              } finally {
+                  this.processing = false;
               }
-            } catch (e) {
-              console.error(e);
-            } finally {
-              this.processing = false;
-            }
           },
           async searchSong(query) {
             try {
@@ -415,10 +556,25 @@
               console.log(err)
             }
           },
+          async register () {
+              this.uploadImage(this.myFile)
+              try {
+                  console.log(this.user)
+                  const response = await AuthenticationService.register(this.user)
+                  console.log(response)
+
+                  this.$router.push({
+                  name: 'tabtrackerlogin'
+                  })
+              } catch (error) {
+                  //this.error = error.response.data.error
+                  console.log('error')
+              }
+          },
           save (date) {
             this.$refs.menu.save(date)
           },
-        }
+        },
     }
 </script>
 
@@ -462,5 +618,14 @@
 
 .cardTitle02 {
   color: white;
+}
+
+.rounded-card{
+    border-radius:50px;
+}
+
+.justifyContent {
+  justify-content: right;
+  margin-right: 6rem
 }
 </style>

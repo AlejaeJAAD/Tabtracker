@@ -33,6 +33,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, "country not provided "],
   },
+  postalCode: {
+    type: Number,
+    required: [true, 'postalCode not prived'],
+  },
   birthDate: {
     type: String,
     required: [true, 'birthDate not provided']

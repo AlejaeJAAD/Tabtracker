@@ -3,7 +3,7 @@ const Joi = require('joi')
 module.exports = {
     register(req, res, next) {
         const schema = Joi.object({
-            fileURL: Joi.string(),
+            fileURL: Joi.any(),
             firstName: Joi.string(),
             lastName: Joi.string(),
             nickName: Joi.string()
@@ -11,16 +11,17 @@ module.exports = {
                 .min(3)
                 .max(20)
                 .required(),
-            phone: Joi.number().max(10),
+            phone: Joi.number(),
             city: Joi.string(),
             state: Joi.string(),
             country: Joi.string(),
+            postalCode: Joi.number(),
             birthDate: Joi.date(),
             email: Joi.string().email({
                 minDomainSegments: 2, tlds: { allow: ['com']}
             }),
             password: Joi.string().regex(
-                new RegExp('^[a-zA-Z0-9]{8,32}$')
+                new RegExp('^[a-zA-Z0-9]{6,32}$')
             ),
             role: Joi.string(),
             created_date: Joi.date()
