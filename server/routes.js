@@ -11,6 +11,7 @@ const requireRefreshToken = require('./middlewares/requireRefreshToken')
 const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
 const {getRooms, getRoomById, createRoom, updateRoom, deleteRoom} = require('./controllers/RoomsController')
 const {getChats, getChatById, createChat, updateChat, deleteChat} = require('./controllers/ChatController')
+const {getAllTutorials, getAllPublishedTutorials, postTutorial} = require('./controllers/TutorialsController')
 
 const {getMusicData} = require('./controllers/MusicController')
 
@@ -135,5 +136,18 @@ module.exports = (app) => {
 
     app.get('/musicData',
         getMusicData
+    )
+
+    //Tutorials
+    app.get('/tutorials', 
+        getAllTutorials
+    )
+
+    app.get('/tutorials/published', 
+        getAllPublishedTutorials
+    )
+
+    app.post('/tutorials', requireToken,
+        postTutorial
     )
 }

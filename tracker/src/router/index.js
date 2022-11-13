@@ -17,6 +17,8 @@ import AddRoom from '@/components/Rooms/AddRoom'
 import JoinRoom from '@/components/Rooms/JoinRoom'
 import ChatRoom from '@/components/Rooms/ChatRoom'
 
+import TutorialList from '@/components/Tutorials/TutorialsList'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -97,6 +99,11 @@ const routes = [
     path: '/test',
     name: 'test',
     component: Test,
+  },
+  {
+    path: '/tutorialList',
+    name: 'TutorialList',
+    component: TutorialList,
   },
 ]
 
