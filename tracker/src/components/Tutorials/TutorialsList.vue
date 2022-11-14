@@ -1,11 +1,12 @@
 <template>
     <v-row align="center" class="list px-3 mx-auto">
         <v-col cols="12" sm="8">
-            <v-text-field v-model="searchTutorial" label="Search by tutorial name"></v-text-field>
+            <v-text-field v-model="title" label="Search by tutorial name"></v-text-field>
         </v-col>
         
+        <!-- @click="page = 1; retrieveTutorials()" -->
         <v-col cols="12" sm="4">
-            <v-btn outlined color="success" small @click="page = 1; retrieveTutorials()">
+            <v-btn outlined color="success" small @click="searchTitle">
                 Search
             </v-btn>
         </v-col>
@@ -16,7 +17,7 @@
                     <v-select
                         v-model="pageSize"
                         :items="pageSizes"
-                        label="Items per page"
+                        label="Tutorials per page"
                         @change="handlePageSizeChange"
                     >
                     </v-select>
@@ -46,17 +47,46 @@
                     disable-pagination
                     :hide-default-footer="true"
                 >
-                <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editTutorial(item.id)">
-                    mdi-pencil
-                    </v-icon>
-                    <v-icon small @click="deleteTutorial(item.id)">
-                    mdi-delete
-                    </v-icon>
-                </template>
+                    <template v-slot:[`item.actions`]="{ item }">
+                        <v-icon small class="mr-2" @click="editTutorial(item.id)">
+                        mdi-pencil
+                        </v-icon>
+                        <v-icon small @click="idOfItemToBeDeleted = item.id; titleOfItemToBeDeleted = item.title; confirmItemToBeDeletedDialog = true">
+                        mdi-delete
+                        </v-icon>
+                    </template>
                 </v-data-table>
             </v-card>
         </v-col>
+
+        <v-col>
+            <v-spacer></v-spacer>
+            <v-card-actions>
+                <v-btn color="error" outlined small @click="confirmDeleteDialog = true">
+                    Remove All
+                </v-btn>
+            </v-card-actions>
+        </v-col>
+
+        <v-dialog width="auto" v-model="confirmDeleteDialog">
+            <v-card class="text-xs-center">
+                <v-card-title>Are you sure you want to delet all the tutorials?</v-card-title>
+                <v-card-actions>
+                    <v-btn color="success" @click="removeAllTutorials">Yes</v-btn>
+                    <v-btn color="error" @click="confirmDeleteDialog = false">No</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog width="auto" v-model="confirmItemToBeDeletedDialog">
+            <v-card class="text-xs-center">
+                <v-card-title>Are you sure you want to delete the tutorial {{titleOfItemToBeDeleted}}?</v-card-title>
+                <v-card-actions>
+                    <v-btn color="success" @click="deleteTutorial">Yes</v-btn>
+                    <v-btn color="error" @click="confirmItemToBeDeletedDialog = false">No</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
@@ -66,7 +96,7 @@
         data () {
             return {
                 tutorials: [],
-                searchTutorial: "",
+                title: "",
                 headers: [
                     { text: "Title", align: "start", sortable: true, value: "title" },
                     { text: "Description", value: "description", sortable: false },
@@ -76,15 +106,20 @@
                 page: 1,
                 totalPages: 0,
                 pageSize: 3,
-                pageSizes: [3, 6, 9],
+                pageSizes: [3, 5],
+                idOfItemToBeDeleted: '',
+                titleOfItemToBeDeleted: '',
+                confirmDeleteDialog: false,
+                confirmItemToBeDeletedDialog: false,
+                watcherActive: false,
             }
         },
         methods: {
-            getRequestParams(searchTitle, page, pageSize) {
+            getRequestParams(title, page, pageSize) {
                 let params = {};
 
-                if (searchTitle) {
-                    params["title"] = searchTitle;
+                if (title) {
+                    params["title"] = title;
                 }
 
                 if (page) {
@@ -99,7 +134,7 @@
             },
             retrieveTutorials() {
                 const params = this.getRequestParams(
-                    this.searchTitle,
+                    this.title,
                     this.page,
                     this.pageSize
                 )
@@ -114,47 +149,60 @@
                     console.log(e);
                 });
             },
-
             refreshList() {
-            this.retrieveTutorials();
+                this.retrieveTutorials();
             },
+            removeAllTutorials() {
+                this.confirmDeleteDialog = false
+                TutorialService.deleteAll()
+                    .then((response) => {
+                        this.refreshList();
+                    })
+                    .catch((e) => {
+                    console.log(e);
+                    });
+            },
+            searchTitle() {
+                const params = this.getRequestParams(
+                    this.title,
+                    this.page,
+                    this.pageSize
+                )
 
-            // removeAllTutorials() {
-            // TutorialService.deleteAll()
-            //     .then((response) => {
-            //     console.log(response.data);
-            //     this.refreshList();
-            //     })
-            //     .catch((e) => {
-            //     console.log(e);
-            //     });
-            // },
-
+                TutorialService.getByTitle(this.title, params)
+                    .then((response) => {
+                        const { tutorials, totalPages } = response.data;
+                        this.tutorials = tutorials.map(this.getDisplayTutorial);
+                        this.totalPages = totalPages;
+                })
+                .catch((e) => {
+                console.log(e);
+                });
+            },
             // searchTitle() {
-            //     TutorialService.findByTitle(this.title)
-            //     .then((response) => {
-            //     this.tutorials = response.data.map(this.getDisplayTutorial);
-            //     console.log(response.data);
-            //     })
-            //     .catch((e) => {
-            //     console.log(e);
-            //     });
-            // },
-
-            // editTutorial(id) {
-            // this.$router.push({ name: "tutorial-details", params: { id: id } });
-            // },
-
-            // deleteTutorial(id) {
-            // TutorialService.delete(id)
-            //     .then(() => {
-            //     this.refreshList();
-            //     })
-            //     .catch((e) => {
-            //     console.log(e);
-            //     });
-            // },
-
+            //     TutorialService.getByTitle(this.searchTutorial)
+            //         .then(response => {
+            //         this.tutorials = response.data;
+            //         console.log(response.data);
+            //         })
+            //         .catch(e => {
+            //         console.log(e);
+            //         });
+            //     }
+            editTutorial(id) {
+                this.$router.push({ name: "TutorialDetails", params: { id: id } });
+            },
+            deleteTutorial() {
+                this.confirmItemToBeDeletedDialog = false
+                TutorialService.deleteTutorial(this.idOfItemToBeDeleted)
+                    .then(() => {
+                        this.watcherActive = true
+                        //this.refreshList();
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            },
             getDisplayTutorial(tutorial) {
                 return {
                     id: tutorial.id,
@@ -167,7 +215,6 @@
                 this.page = value;
                 this.retrieveTutorials();
             },
-
             handlePageSizeChange(size) {
                 this.pageSize = size;
                 this.page = 1;
@@ -177,6 +224,14 @@
         mounted() {
             this.retrieveTutorials();
         },
+        watch: {
+            watcherActive() {
+                this.page = 1;
+                this.totalPages = 0;
+                this.tutorials = [];
+                this.retrieveTutorials();
+            }
+        }
     }
 </script>
 

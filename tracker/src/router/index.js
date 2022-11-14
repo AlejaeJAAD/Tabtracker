@@ -18,6 +18,8 @@ import JoinRoom from '@/components/Rooms/JoinRoom'
 import ChatRoom from '@/components/Rooms/ChatRoom'
 
 import TutorialList from '@/components/Tutorials/TutorialsList'
+import EditTutorial from '@/components/Tutorials/EditTutorial'
+import AddTutorial from '@/components/Tutorials/AddTutorial'
 
 Vue.use(VueRouter)
 
@@ -101,9 +103,19 @@ const routes = [
     component: Test,
   },
   {
+    path: "/add-tutorial",
+    name: "AddTutorial",
+    component: AddTutorial
+  },
+  {
     path: '/tutorialList',
     name: 'TutorialList',
     component: TutorialList,
+  },
+  {
+    path: "/tutorials/:id",
+    name: "TutorialDetails",
+    component: EditTutorial
   },
 ]
 
