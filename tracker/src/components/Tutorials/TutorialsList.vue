@@ -6,8 +6,23 @@
         
         <!-- @click="page = 1; retrieveTutorials()" -->
         <v-col cols="12" sm="4">
-            <v-btn outlined color="success" small @click="searchTitle">
-                Search
+            <v-row>
+                <v-col cols="6">
+                    <v-btn block outlined color="primary" small @click="searchTitle">
+                        Search
+                    </v-btn>
+                </v-col>
+                <v-col cols="6">
+                    <v-btn block outlined color="error" small @click="resetTutorials">
+                        Reset search
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-col>
+
+        <v-col cols="2" style="margin-top: -1rem">
+            <v-btn block outlined color="success" small @click="confirmCreateDialog = true">
+                Add Tutorial
             </v-btn>
         </v-col>
         
@@ -34,11 +49,18 @@
                     >
                     </v-pagination>
                 </v-col>
+
+                <v-col cols="12" class="text-right">
+                    <v-spacer></v-spacer>
+                    <v-btn color="error" outlined small @click="confirmDeleteDialog = true">
+                        Remove All
+                    </v-btn>
+                </v-col>
             </v-row>
         </v-col>
         
         <v-col cols="12" sm="12">
-            <v-card class="mx-auto" tile>
+            <v-card class="mx-auto" tile elevation="2">
                 <v-card-title>Tutorials</v-card-title>
                 
                 <v-data-table
@@ -59,19 +81,10 @@
             </v-card>
         </v-col>
 
-        <v-col>
-            <v-spacer></v-spacer>
-            <v-card-actions>
-                <v-btn color="error" outlined small @click="confirmDeleteDialog = true">
-                    Remove All
-                </v-btn>
-            </v-card-actions>
-        </v-col>
-
         <v-dialog width="auto" v-model="confirmDeleteDialog">
-            <v-card class="text-xs-center">
+            <v-card>
                 <v-card-title>Are you sure you want to delet all the tutorials?</v-card-title>
-                <v-card-actions>
+                <v-card-actions class="justify-center">
                     <v-btn color="success" @click="removeAllTutorials">Yes</v-btn>
                     <v-btn color="error" @click="confirmDeleteDialog = false">No</v-btn>
                 </v-card-actions>
@@ -79,20 +92,24 @@
         </v-dialog>
 
         <v-dialog width="auto" v-model="confirmItemToBeDeletedDialog">
-            <v-card class="text-xs-center">
-                <v-card-title>Are you sure you want to delete the tutorial {{titleOfItemToBeDeleted}}?</v-card-title>
+            <v-card class="text-center" style="padding-bottom: 1.5rem">
+                <v-card-title>Are you sure you want to delete the tutorial&nbsp;<strong>{{titleOfItemToBeDeleted}}</strong> ?</v-card-title>
                 <v-card-actions>
                     <v-btn color="success" @click="deleteTutorial">Yes</v-btn>
                     <v-btn color="error" @click="confirmItemToBeDeletedDialog = false">No</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <AddTutorial v-if="confirmCreateDialog" @closeDialog="getFromChild" :confirmCreateDialog="confirmCreateDialog"/>
     </v-row>
 </template>
 
 <script>
+    import AddTutorial from "./AddTutorial.vue";
     import TutorialService from "@/services/TutorialService";
     export default {
+        components: { AddTutorial },
         data () {
             return {
                 tutorials: [],
@@ -105,11 +122,12 @@
                 ],
                 page: 1,
                 totalPages: 0,
-                pageSize: 3,
-                pageSizes: [3, 5],
+                pageSize: 5,
+                pageSizes: [5, 10],
                 idOfItemToBeDeleted: '',
                 titleOfItemToBeDeleted: '',
                 confirmDeleteDialog: false,
+                confirmCreateDialog: false,
                 confirmItemToBeDeletedDialog: false,
                 watcherActive: false,
             }
@@ -132,6 +150,23 @@
 
                 return params;
             },
+            resetTutorials() {
+                const params = this.getRequestParams(
+                    this.title = '',
+                    this.page = 1,
+                    this.pageSize = 5
+                )
+
+                TutorialService.getAllTutorials(params)
+                .then((response) => {
+                    const { tutorials, totalPages } = response.data
+                    this.tutorials = tutorials.map(this.getDisplayTutorial)
+                    this.totalPages = totalPages
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+            },
             retrieveTutorials() {
                 const params = this.getRequestParams(
                     this.title,
@@ -141,9 +176,9 @@
 
                 TutorialService.getAllTutorials(params)
                 .then((response) => {
-                    const { tutorials, totalPages } = response.data;
-                    this.tutorials = tutorials.map(this.getDisplayTutorial);
-                    this.totalPages = totalPages;
+                    const { tutorials, totalPages } = response.data
+                    this.tutorials = tutorials.map(this.getDisplayTutorial)
+                    this.totalPages = totalPages
                 })
                 .catch((e) => {
                     console.log(e);
@@ -194,10 +229,31 @@
             },
             deleteTutorial() {
                 this.confirmItemToBeDeletedDialog = false
+                this.tutorials.pop()
+
+                if (this.tutorials.length == 0) {
+                    this.page = this.page-1
+                    this.totalPages = this.totalPages-1
+                } 
+
+                const params = this.getRequestParams(
+                    this.title,
+                    this.page,
+                    this.pageSize
+                )
+                
                 TutorialService.deleteTutorial(this.idOfItemToBeDeleted)
-                    .then(() => {
-                        this.watcherActive = true
-                        //this.refreshList();
+                .then(() => {
+                        TutorialService.getAllTutorials(params)
+                        .then((response) => {
+                            const { tutorials, totalPages } = response.data;
+                            this.tutorials = tutorials.map(this.getDisplayTutorial);
+                            this.totalPages = totalPages;
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+
                     })
                     .catch((e) => {
                         console.log(e);
@@ -220,21 +276,19 @@
                 this.page = 1;
                 this.retrieveTutorials();
             },
+            getFromChild(value) {
+                this.confirmCreateDialog = value
+                this.refreshList();
+            }
         },
         mounted() {
             this.retrieveTutorials();
         },
-        watch: {
-            watcherActive() {
-                this.page = 1;
-                this.totalPages = 0;
-                this.tutorials = [];
-                this.retrieveTutorials();
-            }
-        }
     }
 </script>
 
 <style lang="scss" scoped>
-
+.v-card__actions {
+    display: inline; 
+}
 </style>

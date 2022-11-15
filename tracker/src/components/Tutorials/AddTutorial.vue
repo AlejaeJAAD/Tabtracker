@@ -1,37 +1,42 @@
 <template>
-    <v-row>
-        <v-col class="submit-form mt-3 mx-auto">
-            <p class="headline">
-                Add Tutorial
-            </p>
-
-            <v-card v-if="!submitted">
+    <v-row justify="center">
+        <v-dialog
+            style="padding: 1rem"
+            v-model="confirmCreateDialog"
+            persistent
+            max-width="500"
+        >
+            <v-card flat v-if="!submitted" style="padding: 2rem">
+                <v-card-title>
+                    Add tutorial
+                </v-card-title>
                 <v-form ref="form" lazy-validation>
                     <v-text-field
-                    v-model="tutorial.title"
-                    :rules="[(v) => !!v || 'Title is required']"
-                    label="Title"
-                    required
+                        v-model="tutorial.title"
+                        :rules="[(v) => !!v || 'Title is required']"
+                        label="Title"
+                        required
                     ></v-text-field>
 
                     <v-text-field
-                    v-model="tutorial.description"
-                    :rules="[(v) => !!v || 'Description is required']"
-                    label="Description"
-                    required
+                        v-model="tutorial.description"
+                        :rules="[(v) => !!v || 'Description is required']"
+                        label="Description"
+                        required
                     ></v-text-field>
 
                     <v-text-field
-                    v-model="tutorial.uid"
-                    label="User ID"
-                    disabled
+                        v-model="tutorial.uid"
+                        label="User ID"
+                        disabled
                     ></v-text-field>
                 </v-form>
 
-                <v-btn color="primary" class="mt-3" @click="saveTutorial">Submit</v-btn>
+                <v-btn color="success" class="mt-3" @click="saveTutorial">Add</v-btn>
+                <v-btn color="primary" class="mt-3" @click="closeDialog">Close</v-btn>
             </v-card>
 
-            <v-card v-else class="mx-auto">
+            <v-card flat v-else class="mx-auto">
                 <v-card-title>
                     Submitted successfully!
                 </v-card-title>
@@ -41,16 +46,18 @@
                 </v-card-subtitle>
 
                 <v-card-actions>
-                    <v-btn color="success" @click="newTutorial">Add</v-btn>
+                    <v-btn color="success" @click="newTutorial">Add another tutorial</v-btn>
+                    <v-btn color="primary" @click="closeDialog">Close</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-col>
+        </v-dialog>
     </v-row>
 </template>
 
 <script>
     import TutorialService from "@/services/TutorialService";
     export default {
+        props: ['confirmCreateDialog'],
         data () {
             return {
                 tutorial: {
@@ -85,6 +92,9 @@
             }
         },
         methods: {
+            closeDialog (event) {
+                this.$emit('closeDialog', false);
+            },
             async saveTutorial() {
                 var data = {
                     title: this.tutorial.title,
@@ -110,7 +120,6 @@
                 })
 
                 const result = await res.json()
-                console.log(result);
                 this.tutorial.id = result.newTutorial.id;
                 this.submitted = true;
 
