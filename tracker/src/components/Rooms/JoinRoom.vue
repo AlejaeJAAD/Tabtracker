@@ -52,6 +52,7 @@
     import Axios from 'axios'
     import { required, max } from 'vee-validate/dist/rules'
     import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+    import { io } from 'socket.io-client';
 
     setInteractionMode('eager')
 
@@ -70,7 +71,8 @@
         },
         data () {
             return {
-                chat: {}
+                chat: {},
+                socket: io('http://localhost:3001')
             }
         },
         methods: {
@@ -82,6 +84,13 @@
                 this.chat.message = this.chat.nickname + ' Joined the room'
                 Axios.post(`http://localhost:3001/chats`, this.chat)
                 .then(response => {
+                    this.socket.emit('save-message', 
+                        { 
+                            room: this.chat.room, 
+                            nickname: this.chat.nickname, 
+                            message: this.chat.nickname + 'Join this room', 
+                            created_date: new Date()
+                        });
                     this.$router.push({
                         name: 'ChatRoom',
                         params: {

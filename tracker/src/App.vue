@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import SocketioService from './services/SocketioService.js';
 export default {
   name: 'App',
   data() {
@@ -15,12 +16,13 @@ export default {
   },
   created() {
     console.log('App vue')
+    // SocketioService.setupSocketConnection();
+  },
+  beforeUnmount() {
+    SocketioService.disconnect();
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.backGround {
- background-color: rgba(19,19,19,255);
-}
 </style>

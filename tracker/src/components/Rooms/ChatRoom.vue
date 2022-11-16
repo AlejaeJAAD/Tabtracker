@@ -1,10 +1,10 @@
 <template>
     <v-row>
-        <v-col>
+        <v-col cols="10">
             <v-card class="mx-auto" max-width="400" tile>
                 <v-list :three-line="threeLine">
                     <v-subheader>Chat</v-subheader>
-                    <v-list-item-group color="primary">
+                    <v-list-item-group color="primary" v-chat-scroll>
                         <v-list-item
                             class="chat"
                             v-for="(item, i) in chats"
@@ -41,11 +41,18 @@
                 </v-list>
             </v-card>
         </v-col>
+        <v-col cols="2">
+            <v-btn color="error" outlined @click="logout">Logout</v-btn>
+        </v-col>
     </v-row>
 </template>
 
 <script>
     import Axios from 'axios'
+    import Vue from 'vue'
+    import VueChatScroll from 'vue-chat-scroll'
+    Vue.use(VueChatScroll)
+    import { io } from 'socket.io-client';
     export default {
         data () {
             return {
@@ -57,7 +64,8 @@
                 chats: [],
                 errors: [],
                 nickname: this.$route.params.nickname,
-                chat: {}
+                chat: {},
+                socket: io('http://localhost:3001')
             }
         },
         created () {
@@ -69,12 +77,34 @@
             .catch(e => {
                 this.errors.push(e)
             })
+
+            this.socket.on('new-message', function (data) {
+                if(data.message.room === this.$route.params.id) {
+                this.chats.push(data.message)
+                }
+            }.bind(this))
         },
         methods: {
-            logout (id) {
-                this.$router.push({
-                    name: 'JoinRoom',
-                    params: { id: id }
+            logout () {
+                this.chat.room = this.$route.params.id
+                this.chat.message = this.$route.params.nickname + ' left this room'
+                Axios.post(`http://localhost:3001/chats`, this.chat)
+                .then(response => {
+                    this.chat.message = ''
+                    this.socket.emit('save-message', 
+                        { 
+                            room: this.$route.params.id,
+                            nickname: this.$route.params.nickname,
+                            message: this.$route.params.nickname + ' left this room', 
+                            created_date: new Date() 
+                        });
+                    this.$router.push({
+                        name: 'RoomList',
+                        params: { id: this.$route.params.id }
+                    })
+                })
+                .catch(e => {
+                    this.errors.push(e)
                 })
             },
             onSubmit (evt) {
@@ -83,6 +113,8 @@
                 this.chat.nickname = this.$route.params.nickname
                 Axios.post(`http://localhost:3001/chats`, this.chat)
                 .then(response => {
+                    this.socket.emit('save-message', response.data)
+                    this.chat.message = ''
                     // this.$router.push({
                     //   name: 'ChatRoom',
                     //   params: { id: this.$route.params.id, nickname: response.data.nickname }

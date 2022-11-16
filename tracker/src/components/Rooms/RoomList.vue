@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row align="center" class="list px-3 pt-3 mx-auto background">
         <v-col cols="12">
             <!-- <h2>
                 Room List
@@ -10,71 +10,66 @@
                 </v-btn>
             </h2> -->
 
-
-            <v-data-table
-                sort-by="room_name"
-                :headers="headers"
-                :items="rooms"
-                class="elevation-1"
-            >
-                <template v-slot:top>
-                    <v-toolbar flat>
-                        <v-toolbar-title>Rooms</v-toolbar-title>
-                        <v-divider
-                            class="mx-4"
-                            inset
-                            vertical
-                        ></v-divider>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            dark
-                            class="mb-2"
-                            @click.stop="createRoom()"
-                            >
-                            New Item
-                        </v-btn>
-                    </v-toolbar>
-                    <v-dialog v-model="dialogDelete" max-width="500px">
-                        <v-card style="flex-wrap: wrap">
-                            <v-card-title class="text-h5">Are you sure you want to delete the room 
-                                <span style="color: red">{{itemToBeDeleted}}</span>&nbsp;?
-                            </v-card-title>
-                            <v-card-actions>
+            <v-card color="transparent">
+                <v-data-table
+                    sort-by="room_name"
+                    :headers="headers"
+                    :items="rooms"
+                    class="elevation-1 transparent"
+                >
+                    <template v-slot:top>
+                        <v-toolbar class="transparent" color="transparent" flat>
+                            <v-toolbar-title>Rooms</v-toolbar-title>
+                            <v-divider
+                                class="mx-4"
+                                inset
+                                vertical
+                            ></v-divider>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click.stop="closeDelete">Cancel</v-btn>
-                            <v-btn color="blue darken-1" text @click.stop="deleteItemConfirm(room_id)">OK</v-btn>
-                            <v-spacer></v-spacer>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                    <v-icon
-                        small
-                        class="mr-2"
-                        @click.stop="joinRoom(item._id)"
-                    >
-                        mdi-gesture-tap
-                    </v-icon>
-                    <v-icon
-                        small
-                        @click="deleteItem(item)"
-                    >
-                        mdi-delete
-                    </v-icon>
-                </template>
-            </v-data-table>
-            <v-sheet v-if="message">
-                <v-alert type="success">
-                    {{successMessage}}
-                </v-alert>
-            </v-sheet>
-            <ul v-if="errors && errors.length">
-                <li v-for="error of errors" :key="error">
-                    {{error.message}}
-                </li>
-            </ul>
+                            <v-btn
+                                color="primary"
+                                outlined
+                                dark
+                                class="mb-2"
+                                @click.stop="createRoom()"
+                                >
+                                New Item
+                            </v-btn>
+                        </v-toolbar>
+                        <v-dialog v-model="dialogDelete" max-width="500px">
+                            <v-card style="flex-wrap: wrap">
+                                <v-card-title class="text-h5">Are you sure you want to delete the room 
+                                    <span style="color: red">{{itemToBeDeleted}}</span>&nbsp;?
+                                </v-card-title>
+                                <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click.stop="closeDelete">Cancel</v-btn>
+                                <v-btn color="blue darken-1" text @click.stop="deleteItemConfirm(room_id)">OK</v-btn>
+                                <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </template>
+                    <template v-slot:item.actions="{ item }">
+                        <v-btn color="success" small outlined
+                            class="mr-2"
+                            @click.stop="joinRoom(item._id)">Join</v-btn>
+                        <v-btn color="error" small outlined
+                            class="mr-2"
+                            @click="deleteItem(item)">Delete</v-btn>
+                    </template>
+                </v-data-table>
+                <v-sheet v-if="message">
+                    <v-alert type="success">
+                        {{successMessage}}
+                    </v-alert>
+                </v-sheet>
+                <ul v-if="errors && errors.length">
+                    <li v-for="error of errors" :key="error">
+                        {{error.message}}
+                    </li>
+                </ul>
+            </v-card>
         </v-col>
         <v-col>
         </v-col>
@@ -174,5 +169,10 @@
 </script>
 
 <style lang="scss" scoped>
+.background {
+    background: #ECE9E6;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
+}
 </style>

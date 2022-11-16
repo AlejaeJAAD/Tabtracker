@@ -1,27 +1,22 @@
 <template>
-    <v-row align="center" class="list px-3 mx-auto">
-        <v-col cols="12" sm="8">
+    <v-row align="center" class="list px-3 pt-3 mx-auto background">
+        <v-col cols="8" sm="8">
             <v-text-field v-model="title" label="Search by tutorial name"></v-text-field>
         </v-col>
         
         <!-- @click="page = 1; retrieveTutorials()" -->
-        <v-col cols="12" sm="4">
-            <v-row>
-                <v-col cols="6">
-                    <v-btn block outlined color="primary" small @click="searchTitle">
-                        Search
-                    </v-btn>
-                </v-col>
-                <v-col cols="6">
-                    <v-btn block outlined color="error" small @click="resetTutorials">
-                        Reset search
-                    </v-btn>
-                </v-col>
-            </v-row>
+        <v-col cols="2">
+            <v-btn block color="primary" small @click="searchTitle">
+                Search
+            </v-btn>
         </v-col>
-
+        <v-col cols="2">
+            <v-btn block color="error" small @click="resetTutorials">
+                Reset search
+            </v-btn>
+        </v-col>
         <v-col cols="2" style="margin-top: -1rem">
-            <v-btn block outlined color="success" small @click="confirmCreateDialog = true">
+            <v-btn block color="success" small @click="confirmCreateDialog = true">
                 Add Tutorial
             </v-btn>
         </v-col>
@@ -50,20 +45,21 @@
                     </v-pagination>
                 </v-col>
 
-                <v-col cols="12" class="text-right">
+                <v-col cols="12" class="text-right" style="margin-top: -2rem">
                     <v-spacer></v-spacer>
-                    <v-btn color="error" outlined small @click="confirmDeleteDialog = true">
+                    <v-btn color="error" small @click="confirmDeleteDialog = true">
                         Remove All
                     </v-btn>
                 </v-col>
             </v-row>
         </v-col>
         
-        <v-col cols="12" sm="12">
-            <v-card class="mx-auto" tile elevation="2">
+        <v-col cols="12" sm="12" style="padding-bottom: 3rem">
+            <v-card class="mx-auto" tile elevation="4" flat color="transparent">
                 <v-card-title>Tutorials</v-card-title>
                 
                 <v-data-table
+                    class="transparent"
                     :headers="headers"
                     :items="tutorials"
                     disable-pagination
@@ -290,5 +286,11 @@
 <style lang="scss" scoped>
 .v-card__actions {
     display: inline; 
+}
+.background {
+    background: #ECE9E6;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
 </style>
