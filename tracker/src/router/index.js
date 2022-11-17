@@ -1,16 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store/store.js'
+
 import Test from '@/views/Test.vue'
+
 import Tabtracker from '@/views/Tabtracker.vue'
 import TabtrackerRegister from '@/views/TabtrackerRegister.vue'
 import TabtrackerLogin from '@/views/TabtrackerLogin.vue'
+
 import Songs from '@/views/Songs.vue'
 import CreateSong from '@/components/Songs/CreateSong.vue'
 import ViewSong from '@/components/Songs/ViewSong.vue'
 import SongEdit from '@/components/Songs/EditSong.vue'
+
+import Account from '@/views/Account.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import Landing from '@/views/Landing.vue'
-import store from '@/store/store.js'
 
 import RoomList from '@/components/Rooms/RoomList'
 import AddRoom from '@/components/Rooms/AddRoom'
@@ -74,6 +79,16 @@ const routes = [
     meta: 
       { 
         title: 'JAAD - Dashboard',
+        requiresAuth: true
+      }
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account,
+    meta:
+      {
+        title: 'JAAD - Account',
         requiresAuth: true
       }
   },
