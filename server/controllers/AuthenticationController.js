@@ -157,5 +157,101 @@ module.exports = {
     async logout(req, res) {
       await res.clearCookie("refreshToken")
       return res.json({ ok: true });
+    },
+    async forgotPassword(req, res) {
+      const nickname = req.body.nickName
+      if (!nickname) {
+        return res.status(400).json({
+          message: 'Nickname is required'
+        })
+      }
+
+      const message = 'Check your email for a link to reset your password'
+      let verificationLink
+      let emailStatus = 'OK'
+
+      try {
+        //const user = await User.find({ nickname: { $ne: null } })
+
+        const user = await User.findOne({ nickName: nickname })
+        if(!user) {
+          console.log(`User coulnd't be find in the database`)
+        }
+        console.log('USER FINDED', user)
+
+        // const token = generateToken(user._id)
+        // verificationLink = `http://localhost:3001/new-password${token}`
+      } catch (error) {
+        return res.json({
+          error
+        })
+      }
+
+      //SEND EMAIL
+      // try {
+      //   console.log('EMAIL')
+      // } catch (error) {
+      //   emailStatus = error
+      //   return res.status(400).json({
+      //     message: 'Something went wrong'
+      //   })
+      // }
+
+
+      try {
+        //await User.save(user)
+        console.log('jasld')
+      } catch (error) {
+          emailStatus = error
+          return res.status(400).json({
+            message: 'Something went wrrong'
+          })
+      }
+
+      res.json({
+        message,
+        info: emailStatus
+      })
+    },
+    async createNewPassword(req, res) {
+      const newPassword = req.body.newPassword
+      const user = await User.findOne({ email: req.body.email })
+
+      const validPassword = await bcrypt.compare(req.body.password, user.password);
+      if (!validPassword) return res.status(401).send({
+              accessToken: null,
+              error: `
+                  Old password doesn't match <br/>
+                  We couldn't create a new password since the old one is wrong <br/>
+                  Please check you're previous password and try again!
+              `
+      })
+
+      if (!newPassword) {
+        res.status(404).json({
+          message: 'New password is required'
+        })
+      }
+
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(newPassword, salt);
+        user.password = password
+
+        await user.save()
+
+        // const { token, expiresIn } = generateToken(user._id);
+        // generateRefreshToken(user._id, res);
+
+        return res.status(201).json({ 
+          // token,
+          // expiresIn,
+          message: 'Password has changed successfully!' 
+        })
+      } catch (error) {
+        return res.status(401).json({
+          message: 'Something went wrong'
+        })
+      }
     }
 }

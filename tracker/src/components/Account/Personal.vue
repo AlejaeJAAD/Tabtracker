@@ -19,6 +19,15 @@
                                     <v-col cols="10">
                                         <image-handler single :disabled="!editable" v-model="image"></image-handler>
                                     </v-col>
+                                    <v-col cols="10" style="margin-top: 12rem">
+                                        <v-text-field
+                                            label="Nickname"
+                                            solo
+                                            readonly
+                                            v-model="user.nickName"
+                                            append-icon="mdi-rename-box">
+                                        </v-text-field>
+                                    </v-col>
                                 </v-row>
                             </v-col>
                             <v-divider vertical></v-divider>
@@ -203,10 +212,9 @@
             }
         },
         mounted() {
-            console.log(this.userData)
             this.user = this.userData.user
             this.castUser()
-            this.validateCurp()
+            //this.validateCurp()
         },
         watch: {
             image() {
@@ -236,6 +244,7 @@
             },
             actualizar() {
                 console.log('Actualizar...')
+                this.editable = false
             },
             cancelar() {
                 this.castUser();

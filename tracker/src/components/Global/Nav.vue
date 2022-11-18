@@ -1,97 +1,153 @@
 <template>
-    <div class="bg">
-      <v-app-bar :color="color" tile app clipped-left elevation="3" dense>
-        <v-btn v-if="tabtrackertab" text color="white" @click="$router.push('/tabtracker')">Tabtracker</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn v-if="!$store.state.isUserLoggedIn" text color="white" @click="$router.push('/tabtrackerregister')">Register</v-btn>
-        <v-btn v-if="!$store.state.isUserLoggedIn" text color="white" @click="$router.push('/tabtrackerlogin')">Login</v-btn>
-        <v-btn v-if="$store.state.isUserLoggedIn && songstab" text color="white" @click="$router.push('/songs')">Songs</v-btn>
-        <v-btn v-if="$store.state.isUserLoggedIn" text color="white" @click="logout">Logout</v-btn>
+  <v-card>
+      <v-app-bar
+          color="dark" tile>
+          <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+          <v-toolbar-title>Dashboard</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-tooltip v-if="!$vuetify.theme.dark" bottom>
+              <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" color="white" small fab @click="darkMode">
+                      <v-icon class="mr-1">mdi-moon-waxing-crescent</v-icon>
+                  </v-btn>
+              </template>
+              <span>Dark Mode Off</span>
+          </v-tooltip>
+          
+          <v-tooltip v-else bottom>
+              <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" color="white" outlined small fab @click="darkMode">
+                      <v-icon class="mr-1">mdi-white-balance-sunny</v-icon>
+                  </v-btn>
+              </template>
+              <span>Dark Mode On</span>
+          </v-tooltip>
       </v-app-bar>
-    </div>
-  </template>
-  
-  <script>
-    export default {
-      props: ['color'],
-      name: 'Nav',
-      data() {
-        return {
-          tabtrackertab: '',
-          songstab: true,
-          drawer: false,
-          searchQuery: '',
-          cancelQueryBtn: false,
-          searchBox: false,
-          userLoggedIn: this.$store.state.isUserLoggedIn,
-        };
+
+      <v-navigation-drawer
+          v-model="drawer"
+          width="250px" app temporary
+      >
+          <template v-slot:prepend>
+          <v-list-item two-line class="px-2">
+              <v-list-item-avatar color="grey">
+              <v-img :src="image" />
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+              <v-list-item-title v-text="name"></v-list-item-title>
+              <v-list-item-subtitle>Logueado</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-btn icon style="color: black" @click.stop="drawer = !drawer">
+              <v-icon size="30" v-if="drawer">mdi-chevron-left</v-icon>
+              </v-btn>
+          </v-list-item>
+          </template>
+          <v-divider></v-divider>
+
+          <v-list nav shaped dense>
+          <v-list-item-group>
+              <v-list-item @mouseenter="item.hovered = true" black v-for="item in items" :key="item.title" :to="item.to" class="item">
+              <v-list-item-icon>
+                  <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+              </v-list-item>
+          </v-list-item-group>
+          </v-list>
+          <template v-slot:append>
+          <div class="pa-2">
+              <v-btn black block outlined @click="cerrarSesion">Logout<v-icon>mdi-logout</v-icon> </v-btn>
+          </div>
+          </template>
+      </v-navigation-drawer>
+  </v-card>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        drawer: false,
+         group: null,
+      }
+    },
+    mounted () {
+        this.$nextTick(() => {
+          this.$store.dispatch('getRefreshToken')
+        })
+    },
+    watch: {
+        getToken(token) {
+          this.$store.dispatch('getUserInfo')
+        }
+    },
+    computed: {
+      getToken() {
+          return this.$store.state.refToken
       },
-      computed: {
-        items() {
+      getUserInfo() {
+          return this.$store.state.userInfo
+      },
+      items() {
           const items = [
-            {
-              title: 'Tabtracker',
-              icon: 'mdi-vector-intersection',
-              to: '/tabtracker',
-              type: 'tabtracker',
-              hovered: false,
-            }
-          ];
+              {
+                  title: "Dashboard",
+                  icon: "mdi-rss",
+                  to: "/dashboard",
+                  hovered: false
+              },
+              {
+                  title: "Account",
+                  icon: "mdi-account",
+                  to: "/account",
+                  hovered: false
+              },
+              {
+                  title: "Chat rooms",
+                  icon: "mdi-chat",
+                  to: "/room-list",
+                  hovered: false
+              }
+          ]
           return items;
-        },
-        currentRouteName() {
-          return this.$route.name;
-        }
       },
-      mounted() {
-        if (this.$route.query.s) {
-          this.cancelQueryBtn = true;
-        }
-        this.$nextTick(() => {});
-
-        if(this.currentRouteName == 'tabtracker') {
-          this.tabtrackertab = false
-        } else {
-          this.tabtrackertab = true
-        }
-
-        if(this.currentRouteName == 'songs') {
-          this.songstab = false
-        } else {
-          this.songstab = true
-        }
-
-        // if(this.currentRouteName == 'tabtracker') {
-        //     this.registerTab = true;
-        //     this.loginTab = true;
-        // }
-
-        // if(this.currentRouteName == 'tabtracker') {
-        //   this.tabtrackertab = false;
-        // }
+      name() {
+          const usrInfo = this.getUserInfo
+          const fName = usrInfo.user.firstName || "";
+          const lName = usrInfo.user.lastName || "";
+          return `${fName.split(" ")[0]} ${lName.split(" ")[0]}`;
       },
-      methods: {
-        async logout() {
-          try {
-                    const res = await fetch('http://localhost:3001/logout', {
-                        method: 'GET',
-                        credentials: "include",
-                    });
-                    this.$store.dispatch('setLogout')
-                    console.log(res.ok, res.status);
-                    this.$router.push('/')
-                } catch (err) {
-                    console.log(err)
-                }
-        }
-      },
-    };
-  </script>
-  
-  <style scoped>
-    .bg {
-      margin-top: -0.5rem;
-      font-family: Bahnschrift SemiBold;
+      image() {
+          const usrInfo = this.getUserInfo
+          const image = usrInfo.user.fileURL
+          return image
+      }
+  },
+  methods: {
+    darkMode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+    },
+    async cerrarSesion() {
+      try {
+        const res = await fetch('http://localhost:3001/logout', {
+          method: 'GET',
+          credentials: "include",
+        });
+          this.$store.dispatch('setLogout')
+          this.$router.push('/')
+      } catch (err) {
+        console.log(err)
+      }
     }
-  </style>
-  
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.item:hover {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+</style>

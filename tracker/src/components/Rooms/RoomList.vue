@@ -1,5 +1,6 @@
 <template>
-    <v-main fill-height class="background">
+    <v-main fill-height>
+        <Nav />
         <v-row class="list mx-auto mt-10 pl-10 pr-10">
             <v-col cols="12">
                 <!-- <h2>
@@ -11,7 +12,7 @@
                     </v-btn>
                 </h2> -->
     
-                <v-card color="transparent">
+                <v-card elevation="5">
                     <v-data-table
                         sort-by="room_name"
                         :headers="headers"
@@ -81,7 +82,9 @@
 <script>
     import Axios from 'axios'
     import moment from 'moment'
+    import Nav from '@/components/Global/Nav.vue'
     export default {
+        components: { Nav },
         data () {
             return {
                 headers: [
@@ -171,10 +174,4 @@
 </script>
 
 <style lang="scss" scoped>
-.background {
-    background: #ECE9E6;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    height: 100vh;
-}
 </style>

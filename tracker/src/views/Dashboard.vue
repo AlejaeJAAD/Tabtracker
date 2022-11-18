@@ -2,71 +2,7 @@
     <v-card 
         class="mx-auto overflow-hidden"
         height="100vh">
-        <v-app-bar
-            color="dark">
-            <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-            <v-toolbar-title>Dashboard</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-tooltip v-if="!$vuetify.theme.dark" bottom>
-                <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" color="white" small fab @click="darkMode">
-                        <v-icon class="mr-1">mdi-moon-waxing-crescent</v-icon>
-                    </v-btn>
-                </template>
-                <span>Dark Mode Off</span>
-            </v-tooltip>
-            
-            <v-tooltip v-else bottom>
-                <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" color="white" outlined small fab @click="darkMode">
-                        <v-icon class="mr-1">mdi-white-balance-sunny</v-icon>
-                    </v-btn>
-                </template>
-                <span>Dark Mode On</span>
-            </v-tooltip>
-        </v-app-bar>
-
-        <v-navigation-drawer
-            v-model="drawer"
-            absolute
-            temporary
-        >
-            <template v-slot:prepend>
-            <v-list-item two-line class="px-2">
-                <v-list-item-avatar color="grey">
-                <v-img :src="image" />
-                </v-list-item-avatar>
-
-                <v-list-item-content>
-                <v-list-item-title v-text="name"></v-list-item-title>
-                <v-list-item-subtitle>Logueado</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-btn icon style="color: black" @click.stop="drawer = !drawer">
-                <v-icon size="30" v-if="drawer">mdi-chevron-left</v-icon>
-                </v-btn>
-            </v-list-item>
-            </template>
-            <v-divider></v-divider>
-
-            <v-list nav shaped dense>
-            <v-list-item-group>
-                <v-list-item @mouseenter="item.hovered = true" color="black" v-for="item in items" :key="item.title" :to="item.to" class="item">
-                <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item-content>
-                </v-list-item>
-            </v-list-item-group>
-            </v-list>
-            <template v-slot:append>
-            <div class="pa-2">
-                <v-btn color="black" block outlined @click="cerrarSesion">Logout<v-icon>mdi-logout</v-icon> </v-btn>
-            </div>
-            </template>
-        </v-navigation-drawer>
-
+        <Nav />
         <v-row>
             <v-col cols="12">
                 <v-container>
@@ -78,7 +14,11 @@
 </template>
 
 <script>
+    import Nav from '../components/Global/Nav.vue'
     export default {
+        components: {
+            Nav
+        },
         data() {
             return {
                 drawer: false,
