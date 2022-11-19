@@ -1,4 +1,6 @@
 const Chat = require('../models/Chat')
+const User = require('../models/User')
+const helpers = require("./helpers")
 
 module.exports = {
     async getChats (req, res, next) {
@@ -12,16 +14,28 @@ module.exports = {
     //GET A CHAT BY ID
     async getChatById (req, res, next) {
         try {
+            let users = []
+            let data = []
             const chats = await Chat.find({room: req.params.id})
             const modifiedChats = chats.map(chats => ({
                 _id: chats._id,
                 room: chats.room,
                 nickname: chats.nickname,
                 message: chats.message,
+                user: chats.user.toString(),
                 created_date: chats.created_date.toDateString()
-            }));
+            }))
 
-            res.status(200).json(modifiedChats)
+            for (let index = 0; index < modifiedChats.length; index++) {
+                const user = await User.findById(modifiedChats[index].user)
+                users.push(user)
+                users[index].password = undefined;
+                if(modifiedChats[index].user == users[index]._id) {
+                    data.push([modifiedChats[index], users[index]])
+                }
+            }
+            
+            res.status(200).json(data)
         } catch (err) {
             res.status(500).send({
                 error: 'An error has occured trying to fetch the chats for that room'

@@ -11,13 +11,13 @@
                             :key="i"
                             :inactive="inactive"
                         >
-                            <v-list-item-avatar class="left clearfix" v-if="item.nickname === nickname">
-                                <v-img :src="item.avatar"></v-img>
+                            <v-list-item-avatar class="left clearfix" v-if="item[0].nickname === nickname">
+                                <v-img :src="item[1].fileURL"></v-img>
                             </v-list-item-avatar>
                             <v-list-item-content class="chat-body clearfix">
-                                <strong class="primary-font">{{ item.nickname }}</strong> <small class="pull-right text-muted">
-                                <span class="glyphicon glyphicon-time"></span>{{ item.created_date }}</small>
-                                <v-list-item-subtitle v-if="threeLine" v-html="item.message"></v-list-item-subtitle>
+                                <strong class="primary-font">{{ item[0].nickname }}</strong> <small class="pull-right text-muted">
+                                <span class="glyphicon glyphicon-time"></span>{{ item[0].created_date }}</small>
+                                <v-list-item-subtitle v-if="threeLine" v-html="item[0].message"></v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>
