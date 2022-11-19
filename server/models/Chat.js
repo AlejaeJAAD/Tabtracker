@@ -8,6 +8,11 @@ const chatSchema = new mongoose.Schema({
     required: true,
   },
   nickname: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   message: String,
   created_date: { type: Date, default: Date.now },
 });

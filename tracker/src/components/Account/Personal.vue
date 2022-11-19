@@ -19,7 +19,7 @@
                                     <v-col cols="10">
                                         <image-handler single :disabled="!editable" v-model="image"></image-handler>
                                     </v-col>
-                                    <v-col cols="10" style="margin-top: 12rem">
+                                    <v-col cols="10">
                                         <v-text-field
                                             label="Nickname"
                                             solo
@@ -44,10 +44,10 @@
                                             <v-col cols="12" md="6">
                                                 <v-text-field label="Apellido(s)" solo :readonly="!editable" v-model="user.lastName" append-icon="mdi-rename-box"></v-text-field>
                                             </v-col>
-                                                <v-col cols="12" md="4">
+                                                <v-col cols="12" md="6">
                                             <v-text-field label="Email" solo :readonly="!editable" v-model="user.email" append-icon="mdi-email"> </v-text-field>
                                                 </v-col>
-                                            <v-col cols="12" md="2" offset-md="2">
+                                            <v-col cols="12" md="5" offset-md="1">
                                                 <v-text-field label="Phone number" solo type="number" :readonly="!editable" v-model.number="user.phone" append-icon="mdi-cellphone"></v-text-field>
                                             </v-col> 
                                             <v-col cols="12" md="5">

@@ -1,7 +1,6 @@
 <template>
     <v-container>
-        <Nav :color="color" style="margin-top: 2rem" />
-        <v-row justify="center" no-gutters style="margin: 1rem 0 1rem 0">
+        <v-row justify="center" no-gutters style="margin: 4rem 0 1rem 0">
             <v-col cols="6">
                 <v-card ref="form" tile flat height="100%" class="rounded-lg" elevation="5">
                 <v-card-text>
@@ -303,11 +302,9 @@
 </template>
 
 <script>
-    import Nav from '../components/Global/Nav.vue'
     import AuthenticationService from '@/services/AuthenticationService'
     import {uploadFile} from '../services/firebase'
     export default {
-        components: { Nav },
         data() {
             return {
                 color: 'rgb(233, 69, 96)',
@@ -319,7 +316,6 @@
                 error: '',
                 message: '',
                 songName: '',
-                errorMessage: "We couldn't find a song with that name registered\nWrite the song name again",
                 resultFromQuery: null,
                 resultFromQueryError: false,
                 user: {

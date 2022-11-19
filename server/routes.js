@@ -30,7 +30,7 @@ module.exports = (app) => {
     app.get('/refresh-token', requireRefreshToken, AC.refreshToken)
 
     // Protected route
-    app.get('/dashboard', requireToken, AC.infoUser,)
+    app.get('/userInfo', requireToken, AC.infoUser,)
 
     // Display all songs
     app.get('/songs', requireToken, SC.index)
@@ -67,7 +67,7 @@ module.exports = (app) => {
     app.delete('/rooms/:id', deleteRoom)
     app.get('/chats', getChats)
     app.get('/chats/:id', getChatById)
-    app.post('/chats', createChat)
+    app.post('/chats', requireToken, createChat)
     app.patch('/chats/:id', updateChat)
     app.delete('/chats/:id', deleteChat)
 

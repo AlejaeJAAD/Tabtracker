@@ -21,10 +21,11 @@
                             <v-row>
                                 <v-col cols="12" md="12">
                                     <v-text-field
+                                        disabled
                                         :counter="15"
                                         :error-messages="errors"
-                                        v-model.trim="chat.nickname"
-                                        label="Enter Nickname"
+                                        v-model.trim="nickname"
+                                        label="Nickname"
                                         required
                                     ></v-text-field>
                                 </v-col>
@@ -72,38 +73,99 @@
         data () {
             return {
                 chat: {},
-                socket: io('http://localhost:3001')
+                socket: io('http://localhost:3001'),
+                nickname: '',
             }
         },
         methods: {
             submit () {
                 this.$refs.observer.validate()
             },
-            joinRoom() {
+            async joinRoom() {
+                const resToken = await fetch('http://localhost:3001/refresh-token', {
+                method: 'GET',
+                credentials: "include"
+                })
+
+                const {token} = await resToken.json()
+
                 this.chat.room = this.$route.params.id
-                this.chat.message = this.chat.nickname + ' Joined the room'
-                Axios.post(`http://localhost:3001/chats`, this.chat)
-                .then(response => {
+                this.chat.message = 
+                    this.nickname
+                        + 
+                    ' Joined the room'
+                this.chat.nickname = this.nickname
+                // Axios.post(`http://localhost:3001/chats`, this.chat)
+                // .then(response => {
+                //     this.socket.emit('save-message', 
+                //         { 
+                //             room: this.chat.room, 
+                //             nickname: this.chat.nickname, 
+                //             message: this.chat.nickname + 'Join this room', 
+                //             created_date: new Date()
+                //         });
+                //     this.$router.push({
+                //         name: 'ChatRoom',
+                //         params: {
+                //             id: this.$route.params.id,
+                //             nickname: response.data.nickname
+                //         }
+                //     })
+                // })
+                // .catch(e => {
+                //     this.errors.push(e)
+                // })
+                try {
+                    const newChat = await fetch('http://localhost:3001/chats', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                        body: JSON.stringify(this.chat)
+                    })
+
                     this.socket.emit('save-message', 
-                        { 
-                            room: this.chat.room, 
-                            nickname: this.chat.nickname, 
-                            message: this.chat.nickname + 'Join this room', 
-                            created_date: new Date()
-                        });
+                    { 
+                        room: this.chat.room, 
+                        nickname: this.chat.nickname,
+                        message: this.nickname + ' Join this room', 
+                        created_date: new Date()
+                    });
                     this.$router.push({
                         name: 'ChatRoom',
                         params: {
                             id: this.$route.params.id,
-                            nickname: response.data.nickname
+                            nickname: this.nickname
                         }
                     })
-                })
-                .catch(e => {
-                    this.errors.push(e)
-                })
+
+                    console.log(newChat)
+                } catch (err) {
+                    console.log(err)
+                }
             }
-        }
+        },
+        computed: {
+            getUserInfo() {
+                return this.$store.state.userInfo
+            },
+            getToken() {
+                return this.$store.state.refToken
+            },
+        },
+        mounted () {
+            this.$nextTick(() => {
+                this.$store.dispatch('getRefreshToken')
+                this.nickname = this.getUserInfo.user.nickName 
+                this.chat.user = this.getUserInfo.user
+            })
+        },
+        watch: {
+            getToken(token) {
+                this.$store.dispatch('getUserInfo')
+            }
+        },
     }
 </script>
 

@@ -5,6 +5,6 @@ export default {
         return Api().get('refresh-token')
     },
     show (token, user) {
-        return Api().get('dashboard', token, user)
+        return Api().get('userInfo', token, user)
     }
 }

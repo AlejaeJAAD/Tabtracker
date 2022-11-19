@@ -66,7 +66,7 @@ export default new Vuex.Store({
       commit('setRefToken', destructuredData)
     },
     async getUserInfo ({commit}) {
-      const res = await fetch('http://localhost:3001/dashboard', {
+      const res = await fetch('http://localhost:3001/userInfo', {
         method: 'GET',
         headers: {
             'Content-Type': "application/json",

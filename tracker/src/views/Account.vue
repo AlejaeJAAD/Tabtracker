@@ -19,7 +19,7 @@
         </v-col>
         <v-col cols="12" md="9">
           <Personal v-if="opcion === 1" :userData="user" />
-          <Security v-if="opcion === 2" />
+          <Security v-if="opcion === 2" :userData="user"/>
         </v-col>
       </v-row>
     </div>

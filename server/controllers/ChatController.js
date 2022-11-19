@@ -31,10 +31,24 @@ module.exports = {
 
     //Create chat
     async createChat (req, res, next) {
-        await Chat.create(req.body, function (err, post) {
-            if (err) return next(err)
-            res.json(post)
-        })
+        console.log(req.body)
+        try {
+            const chat = new Chat({
+                room: req.body.room,
+                nickname: req.body.nickname,
+                message: req.body.message,
+                user: req.body.user
+            })
+            
+            const newChat = await chat.save()
+            res.json({
+                newChat
+            })
+        } catch (err) {
+            return res.status(500).json({
+                error: 'Some error with the server'
+            })
+        }
     },
 
     //Update chat

@@ -177,7 +177,6 @@ module.exports = {
         if(!user) {
           console.log(`User coulnd't be find in the database`)
         }
-        console.log('USER FINDED', user)
 
         // const token = generateToken(user._id)
         // verificationLink = `http://localhost:3001/new-password${token}`
@@ -216,10 +215,10 @@ module.exports = {
     async createNewPassword(req, res) {
       const newPassword = req.body.newPassword
       const user = await User.findOne({ email: req.body.email })
+      console.log(user.password, 'PASS')
 
       const validPassword = await bcrypt.compare(req.body.password, user.password);
       if (!validPassword) return res.status(401).send({
-              accessToken: null,
               error: `
                   Old password doesn't match <br/>
                   We couldn't create a new password since the old one is wrong <br/>
