@@ -7,7 +7,7 @@ const chatSchema = new mongoose.Schema({
     ref: 'Room',
     required: true,
   },
-  nickname: String,
+  nickName: String,
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -16,11 +16,5 @@ const chatSchema = new mongoose.Schema({
   message: String,
   created_date: { type: Date, default: Date.now },
 },{ timestamps: true });
-
-chatSchema.method("toJSON", function() {
-  const { __v, _id, ...object } = this.toObject();
-  object.id = _id;
-  return object;
-});
 
 module.exports = mongoose.model('Chat', chatSchema);

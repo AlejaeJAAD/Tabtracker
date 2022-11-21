@@ -110,7 +110,7 @@ const routes = [
     component: JoinRoom
   },
   {
-    path: '/chat-room/:id/:nickname',
+    path: '/chat-room/:id/:nickName',
     name: 'ChatRoom',
     component: ChatRoom
   },

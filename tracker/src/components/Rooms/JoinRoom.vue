@@ -24,7 +24,7 @@
                                         disabled
                                         :counter="15"
                                         :error-messages="errors"
-                                        v-model.trim="nickname"
+                                        v-model.trim="nickName"
                                         label="Nickname"
                                         required
                                     ></v-text-field>
@@ -74,7 +74,7 @@
             return {
                 chat: {},
                 socket: io('http://localhost:3001'),
-                nickname: '',
+                nickName: '',
             }
         },
         methods: {
@@ -91,10 +91,10 @@
 
                 this.chat.room = this.$route.params.id
                 this.chat.message = 
-                    this.nickname
+                    this.nickName
                         + 
                     ' Joined the room'
-                this.chat.nickname = this.nickname
+                this.chat.nickName = this.nickName
                 // Axios.post(`http://localhost:3001/chats`, this.chat)
                 // .then(response => {
                 //     this.socket.emit('save-message', 
@@ -128,15 +128,16 @@
                     this.socket.emit('save-message', 
                     { 
                         room: this.chat.room, 
-                        nickname: this.chat.nickname,
-                        message: this.nickname + ' Join this room', 
+                        nickName: this.chat.nickName,
+                        message: this.nickName + ' Join this room', 
                         created_date: new Date()
                     });
+                    console.log(this.$route.params.id, this.nickName)
                     this.$router.push({
                         name: 'ChatRoom',
                         params: {
                             id: this.$route.params.id,
-                            nickname: this.nickname
+                            nickName: this.nickName
                         }
                     })
 
@@ -157,7 +158,7 @@
         mounted () {
             this.$nextTick(() => {
                 this.$store.dispatch('getRefreshToken')
-                this.nickname = this.getUserInfo.user.nickName 
+                this.nickName = this.getUserInfo.user.nickName 
                 this.chat.user = this.getUserInfo.user
             })
         },

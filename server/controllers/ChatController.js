@@ -20,7 +20,7 @@ module.exports = {
             const modifiedChats = chats.map(chats => ({
                 _id: chats._id,
                 room: chats.room,
-                nickname: chats.nickname,
+                nickName: chats.nickName,
                 message: chats.message,
                 user: chats.user.toString(),
                 created_date: chats.created_date.toDateString()
@@ -45,14 +45,16 @@ module.exports = {
 
     //Create chat
     async createChat (req, res, next) {
-        console.log(req.body)
+        console.log('BODY', req.body)
         try {
             const chat = new Chat({
                 room: req.body.room,
-                nickname: req.body.nickname,
+                nickName: req.body.nickName,
                 message: req.body.message,
                 user: req.body.user
             })
+
+            console.log('CHAT', chat)
             
             const newChat = await chat.save()
             res.json({

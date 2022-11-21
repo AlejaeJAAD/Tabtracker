@@ -67,7 +67,7 @@ module.exports = (app) => {
     app.delete('/rooms/:id', deleteRoom)
     app.get('/chats', getChats)
     app.get('/chats/:id', getChatById)
-    app.post('/chats', requireToken, createChat)
+    app.post('/chats', createChat)
     app.patch('/chats/:id', updateChat)
     app.delete('/chats/:id', deleteChat)
 
