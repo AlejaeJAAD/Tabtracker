@@ -22,7 +22,12 @@
                         label="Old Password"
                         solo
                         v-model="oldPassword"
-                        append-icon="mdi-password"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :rules="[rules.required, rules.min]"
+                        :type="show1 ? 'text' : 'password'"
+                        hint="At least 6 characters"
+                        class="input-group--focused text-green"
+                        @click:append="show1 = !show1"
                     >
                     </v-text-field>
                 </v-col>
@@ -31,12 +36,39 @@
                         label="New Password"
                         solo
                         v-model="newPassword"
-                        append-icon="mdi-password"
+                        :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :rules="[rules.required, rules.min]"
+                        :type="show2 ? 'text' : 'password'"
+                        hint="At least 6 characters"
+                        class="input-group--focused"
+                        @click:append="show2 = !show2"
                     >
                     </v-text-field>
                 </v-col>
+                <v-col cols="6" offset-sm="6" offset-md="6" offset-lg="6">
+                    <v-text-field
+                        label="Confirm Password"
+                        solo
+                        v-model="confirmPassword"
+                        :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :rules="[rules.required, rules.min]"
+                        :type="show3 ? 'text' : 'password'"
+                        hint="At least 6 characters"
+                        class="input-group--focused"
+                        @click:append="show3 = !show3"
+                    >
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" v-if="progress">
+                    <v-progress-circular
+                        :size="70"
+                        :width="7"
+                        color="white"
+                        indeterminate
+                    ></v-progress-circular>
+                </v-col>
                 <v-col v-if="showError">
-                    <v-alert>
+                    <v-alert color="error" outlined>
                         {{error}}
                     </v-alert>
                 </v-col>
@@ -45,7 +77,7 @@
                 <v-col cols="12">
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="error" outlined small @click="actualizePassword">Change password</v-btn>
+                        <v-btn color="primary" outlined small @click="updatePassword">Update password</v-btn>
                     </v-card-actions>
                     <v-dialog v-model="dialog" max-width="290">
                         <v-card>
@@ -74,7 +106,16 @@
                 editable: false,
                 oldPassword: '',
                 newPassword: '',
+                confirmPassword: '',
                 dialog: false,
+                progress: false,
+                rules: {
+                  required: value => !!value || 'This field is required',
+                  min: v => v.length >= 6 || 'Min 6 characters',
+                },
+                show1: false,
+                show2: false,
+                show3: false,
             }
         },
         mounted() {
@@ -83,37 +124,51 @@
             })
         },
         methods: {
-            async actualizePassword() {
-                this.dialog = true
+            async updatePassword() {
                 try {
-                    const data = {
-                        email: this.user.email,
-                        password: this.oldPassword,
-                        newPassword: this.newPassword
+                    if(this.newPassword == this.confirmPassword) {
+                        this.progress = true
+
+                        const data = {
+                            email: this.user.email,
+                            password: this.oldPassword,
+                            newPassword: this.newPassword
+                        }
+
+                        // const resToken = await fetch('http://localhost:3001/refresh-token', {
+                        // method: 'GET',
+                        // credentials: "include"
+                        // })
+    
+                        // const {token} = await resToken.json()
+    
+                        // await fetch('http://localhost:3001/new-password', {
+                        //     method: 'PUT',
+                        //     headers: {
+                        //         'Content-Type': 'application/json',
+                        //         Authorization: "Bearer " + token,
+                        //     },
+                        //     credentials: 'include',
+                        //     body: JSON.stringify(data)
+                        // })
+    
+                        // this.dialog = true
+    
+                        // setTimeout(() => {
+                        //     this.progress = false
+                        //     this.$router.push({
+                        //         name: 'dashboard'
+                        //     })
+                        // }, 1500)
+                        console.log('entro')
+                    } else if ((this.oldPassword || this.newPassword || this.confirmPassword) == '') {
+                        this.error = 'Old Password cannot be empty, New Password cannot be empty, Confirm Password cannot be empty'
+                        this.showError = true
+                    } else if (this.newPassword != this.confirmPassword) {
+                        this.error = 'New password and Confirm password are not the same, please try again.'
+                        this.showError = true
                     }
 
-                    const resToken = await fetch('http://localhost:3001/refresh-token', {
-                    method: 'GET',
-                    credentials: "include"
-                    })
-
-                    const {token} = await resToken.json()
-
-                    await fetch('http://localhost:3001/new-password', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: "Bearer " + token,
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(data)
-                    })
-
-                    setTimeout(() => {
-                        this.$router.push({
-                            name: 'dashboard'
-                        })
-                    }, 1500);
                 } catch (error) {
                     this.error = error
                     this.showError = true
@@ -124,5 +179,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+.v-progress-circular {
+  margin: 1rem;
+}
 </style>

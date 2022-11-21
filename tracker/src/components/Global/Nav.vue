@@ -72,12 +72,14 @@
       return {
         drawer: false,
          group: null,
+         userData: ''
       }
     },
     mounted () {
-        this.$nextTick(() => {
-          this.$store.dispatch('getRefreshToken')
-        })
+        this.$store.dispatch('getRefreshToken')
+        setTimeout(() => {
+          this.userData = this.getUserInfo.user
+        }, 1000);
     },
     watch: {
         getToken(token) {
@@ -112,17 +114,28 @@
                   hovered: false
               }
           ]
+
+          if (this.userData.role == 'admin') {
+            items.push(
+              {
+                title: "Customers",
+                icon: "mdi-account-group",
+                to: "/customers",
+                hovered: false
+              },
+            );
+          }
           return items;
       },
       name() {
-          const usrInfo = this.getUserInfo
-          const fName = usrInfo.user.firstName || "";
-          const lName = usrInfo.user.lastName || "";
+          const usrInfo = this.userData
+          const fName = usrInfo.firstName || "";
+          const lName = usrInfo.lastName || "";
           return `${fName.split(" ")[0]} ${lName.split(" ")[0]}`;
       },
       image() {
-          const usrInfo = this.getUserInfo
-          const image = usrInfo.user.fileURL
+          const usrInfo = this.userData
+          const image = usrInfo.fileURL
           return image
       }
   },

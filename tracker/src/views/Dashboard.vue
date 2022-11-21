@@ -4,10 +4,28 @@
         height="100vh">
         <Nav />
         <v-row>
-            <v-col cols="12">
-                <v-container>
-                    {{getUserInfo.user.firstName}}
-                </v-container>
+            <v-col v-if="loadedData">
+                <v-card>
+                    <v-card-title>
+                        Loading the data...
+                    </v-card-title>
+                </v-card>
+            </v-col>
+            <v-col v-if="privateInfo">
+                <v-card>
+                    <v-card-title>Protected content</v-card-title>
+                    <v-container>
+                        Welcome back {{userData.firstName}}
+                    </v-container>
+                </v-card>
+            </v-col>
+            <v-col v-if="publicInfo">
+                <v-card>
+                    <v-card-title>Public content</v-card-title>
+                    <v-container>
+                        Welcome back {{userData.firstName}}
+                    </v-container>
+                </v-card>
             </v-col>
         </v-row>
     </v-card>
@@ -21,12 +39,24 @@
         },
         data() {
             return {
+                privateInfo: false,
+                publicInfo: false,
+                loadedData: true,
+                userData: ''
             }
         },
         mounted () {
-            this.$nextTick(() => {
-                this.$store.dispatch('getRefreshToken')
-            })
+            this.$store.dispatch('getRefreshToken')
+            setTimeout(() => {
+                this.loadedData = false;
+                this.userData = this.getUserInfo.user
+                console.log(this.userData)
+                if(this.userData.role == 'admin') {
+                    this.privateInfo = true
+                } else {
+                    this.publicInfo = true
+                }
+            }, 1000);
         },
         watch: {
             getToken(token) {

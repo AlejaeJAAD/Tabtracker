@@ -140,9 +140,9 @@ module.exports = {
     async infoUser(req, res) {
       try {
           const user = await User.findById(req.uid)
-          user.password = undefined;
+          user.password = undefined
           
-          return res.json({ user });
+          return res.json({ user })
           // if (user.role == 'admin') {
           //   return res.json({message: 'You must be admin'})
           // } else {
@@ -175,7 +175,14 @@ module.exports = {
 
         const user = await User.findOne({ nickName: nickname })
         if(!user) {
-          console.log(`User coulnd't be find in the database`)
+          res.json({
+            message: `User coulnd't be find in the database`
+          })
+        } else {
+          res.json({
+            message,
+            info: emailStatus
+          })
         }
 
         // const token = generateToken(user._id)
@@ -199,7 +206,6 @@ module.exports = {
 
       try {
         //await User.save(user)
-        console.log('jasld')
       } catch (error) {
           emailStatus = error
           return res.status(400).json({
@@ -207,10 +213,6 @@ module.exports = {
           })
       }
 
-      res.json({
-        message,
-        info: emailStatus
-      })
     },
     async createNewPassword(req, res) {
       const newPassword = req.body.newPassword

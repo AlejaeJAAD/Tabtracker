@@ -26,6 +26,8 @@ import TutorialList from '@/components/Tutorials/TutorialsList'
 import EditTutorial from '@/components/Tutorials/EditTutorial'
 import AddTutorial from '@/components/Tutorials/AddTutorial'
 
+import Customers from '@/views/Customers.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -131,6 +133,11 @@ const routes = [
     path: "/tutorials/:id",
     name: "TutorialDetails",
     component: EditTutorial
+  },
+  {
+    path: '/customers',
+    name: 'Customers',
+    component: Customers,
   },
 ]
 

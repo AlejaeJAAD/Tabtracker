@@ -331,7 +331,7 @@
                   birthDate: '',
                   email: '',
                   password: '',
-                  role: 'Normal',
+                  role: 'normal',
                 },
                 countries: ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Anguilla', 'Antigua &amp; Barbuda', 'Argentina',
                 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus',

@@ -58,9 +58,6 @@
             return {
                 inactive: false,
                 threeLine: true,
-                // subGroup: false,
-                // nav: false,
-                // avatar: false,
                 chats: [],
                 errors: [],
                 nickname: this.$route.params.nickname,
