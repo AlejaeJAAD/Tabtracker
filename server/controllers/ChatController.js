@@ -22,15 +22,15 @@ module.exports = {
                 room: chats.room,
                 nickName: chats.nickName,
                 message: chats.message,
-                user: chats.user.toString(),
+                uid: chats.uid.toString(),
                 created_date: chats.created_date.toDateString()
             }))
 
             for (let index = 0; index < modifiedChats.length; index++) {
-                const user = await User.findById(modifiedChats[index].user)
+                const user = await User.findById(modifiedChats[index].uid)
                 users.push(user)
                 users[index].password = undefined;
-                if(modifiedChats[index].user == users[index]._id) {
+                if(modifiedChats[index].uid == users[index]._id) {
                     data.push([modifiedChats[index], users[index]])
                 }
             }
@@ -45,16 +45,13 @@ module.exports = {
 
     //Create chat
     async createChat (req, res, next) {
-        console.log('BODY', req.body)
         try {
             const chat = new Chat({
                 room: req.body.room,
                 nickName: req.body.nickName,
                 message: req.body.message,
-                user: req.body.user
+                uid: req.body.uid
             })
-
-            console.log('CHAT', chat)
             
             const newChat = await chat.save()
             res.json({

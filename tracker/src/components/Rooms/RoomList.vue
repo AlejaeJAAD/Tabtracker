@@ -29,13 +29,11 @@
                                 ></v-divider>
                                 <v-spacer></v-spacer>
                                 <v-btn
-                                    color="primary"
                                     outlined
-                                    dark
                                     class="mb-2"
-                                    @click.stop="createRoom()"
+                                    @click.stop="createDialog = true"
                                     >
-                                    New Item
+                                    Add Room
                                 </v-btn>
                             </v-toolbar>
                             <v-dialog v-model="dialogDelete" max-width="500px">
@@ -73,18 +71,17 @@
                     </ul>
                 </v-card>
             </v-col>
-            <v-col>
-            </v-col>
+            <AddRoom v-if="createDialog" @closeDialog="getFromChild" :createDialog="createDialog"/>
         </v-row>
     </v-main>
 </template>
 
 <script>
     import Axios from 'axios'
-    import moment from 'moment'
     import Nav from '@/components/Global/Nav.vue'
+    import AddRoom from "./AddRoom.vue";
     export default {
-        components: { Nav },
+        components: { Nav, AddRoom },
         data () {
             return {
                 headers: [
@@ -113,7 +110,8 @@
                 },
                 itemToBeDeleted: '',
                 message: false,
-                room_id: ''
+                room_id: '',
+                createDialog: false
             }
         },
         watch: {
@@ -137,37 +135,64 @@
                     params: { id: id }
                 })
             },
-            createRoom () {
-                console.log('Create')
-            },
             deleteItem (item) {
+                this.room_id = '',
+                this.editedIndex = -1,
+                this.editedItem = {
+                    created_date: '',
+                    room_name: '',
+                },
+                this.itemToBeDeleted = ''
+
                 this.editedIndex = this.rooms.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialogDelete = true
                 this.itemToBeDeleted = item.room_name
                 this.room_id = item._id
+
+                this.retrieveRooms()
             },
-            deleteItemConfirm (room_id) {
-                Axios.delete(`http://localhost:3001/rooms/${room_id}`)
+            async deleteItemConfirm() {
+                console.log(this.room_id)
+                await Axios.delete(`http://localhost:3001/rooms/${this.room_id}`)
                 .then((res) => {
-                    console.log(res)
                     this.successMessage = res.data.message
-                    //this.successMessage = 'Room deleted successfully'
                 })
+                this.room_id = ''
                 this.rooms.splice(this.editedIndex, 1)
                 this.closeDelete()
                 this.message = true
                 setTimeout(() => {
                     this.message = false
-                }, 1500);
+                }, 1000);
             },
             closeDelete () {
                 this.dialogDelete = false
                 this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-
-                this.editedIndex = -1
+                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedIndex = -1
                 })
+            },
+            getFromChild(value) {
+                this.retrieveRooms()
+                this.createDialog = value
+            },
+            async retrieveRooms() {
+                console.log('sdksfll')
+                this.rooms_id = ''
+                await Axios.get(`http://localhost:3001/rooms`)
+                .then(res => {
+                    this.rooms = res.data.map(this.getDisplayRooms)
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },
+            getDisplayRooms(room) {
+                return {
+                    room_name: room.room_name.length > 30 ? room.room_name.substr(0, 30) + "..." : room.room_name,
+                    created_date: room.created_date
+                }
             },
         }
     }

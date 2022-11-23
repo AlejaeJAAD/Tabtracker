@@ -75,6 +75,7 @@
                 chat: {},
                 socket: io('http://localhost:3001'),
                 nickName: '',
+                user: ''
             }
         },
         methods: {
@@ -95,6 +96,7 @@
                         + 
                     ' Joined the room'
                 this.chat.nickName = this.nickName
+                this.chat.uid = this.user._id
                 // Axios.post(`http://localhost:3001/chats`, this.chat)
                 // .then(response => {
                 //     this.socket.emit('save-message', 
@@ -129,10 +131,10 @@
                     { 
                         room: this.chat.room, 
                         nickName: this.chat.nickName,
-                        message: this.nickName + ' Join this room', 
+                        message: this.nickName + ' Join this room',
+                        uid: this.user._id,
                         created_date: new Date()
                     });
-                    console.log(this.$route.params.id, this.nickName)
                     this.$router.push({
                         name: 'ChatRoom',
                         params: {
@@ -140,8 +142,6 @@
                             nickName: this.nickName
                         }
                     })
-
-                    console.log(newChat)
                 } catch (err) {
                     console.log(err)
                 }
@@ -159,7 +159,7 @@
             this.$nextTick(() => {
                 this.$store.dispatch('getRefreshToken')
                 this.nickName = this.getUserInfo.user.nickName 
-                this.chat.user = this.getUserInfo.user
+                this.user = this.getUserInfo.user
             })
         },
         watch: {

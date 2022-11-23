@@ -30,7 +30,8 @@ module.exports = (app) => {
     app.get('/refresh-token', requireRefreshToken, AC.refreshToken)
 
     // Protected route
-    app.get('/userInfo', requireToken, AC.infoUser,)
+    app.get('/userInfo', requireToken, AC.infoUser)
+    app.post('/getUserData', AC.getUserData)
 
     // Display all songs
     app.get('/songs', requireToken, SC.index)

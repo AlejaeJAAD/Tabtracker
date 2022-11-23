@@ -154,6 +154,15 @@ module.exports = {
           return res.status(403).json({ error: error.message });
       }
     },
+    async getUserData(req, res) {
+      try {
+        const user = await User.findById(req.body.uid)
+          
+        return res.json({ user })
+      } catch (err) {
+        console.log(err)
+      }
+    },
     async logout(req, res) {
       await res.clearCookie("refreshToken")
       return res.json({ ok: true });
