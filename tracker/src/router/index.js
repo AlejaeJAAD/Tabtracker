@@ -26,7 +26,8 @@ import TutorialList from '@/components/Tutorials/TutorialsList'
 import EditTutorial from '@/components/Tutorials/EditTutorial'
 import AddTutorial from '@/components/Tutorials/AddTutorial'
 
-import Customers from '@/views/Customers.vue'
+import CustomerList from '@/components/Customers/CustomerList'
+import EditCustomer from '@/components/Customers/EditCustomer'
 
 Vue.use(VueRouter)
 
@@ -135,9 +136,14 @@ const routes = [
     component: EditTutorial
   },
   {
-    path: '/customers',
-    name: 'Customers',
-    component: Customers,
+    path: '/customerList',
+    name: 'CustomerList',
+    component: CustomerList,
+  },
+  {
+    path: '/customers/:id',
+    name: 'CustomerDetails',
+    component: EditCustomer,
   },
 ]
 

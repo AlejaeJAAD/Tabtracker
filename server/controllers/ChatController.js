@@ -87,5 +87,22 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+
+    async deleteAllChats (req, res) {
+        try {
+            const result = await Chat.deleteMany({})
+            return result
+                // .then(data => {
+                //     return res.send({
+                //         message: `${data.deletedCound} chats were deleted successfully`
+                //     })
+                // })
+        } catch (err) {
+            // return res.status(500).send({
+            //     message: err.message || "Some error occurred while removing all the chats."
+            // })
+            console.log(err)
+        }
+    },
 }

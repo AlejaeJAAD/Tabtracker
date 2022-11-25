@@ -7,7 +7,7 @@ export default {
     deleteRoom(id) {
         return Api().delete(`rooms/${id}`)
     },
-    deleteAll() {
+    deleteAllRooms() {
         return Api().delete('rooms')
     },
 }

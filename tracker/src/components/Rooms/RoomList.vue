@@ -17,8 +17,13 @@
                             Add Room
                         </v-btn>
                     </v-col>
+
+                    <v-col cols="5" class="text-right" style="margin-top: 1rem">
+                        <v-spacer></v-spacer>
+                        <v-btn color="success" @click="generatePDF">Generate PDF</v-btn>
+                    </v-col>
                     
-                    <v-col cols="10" class="text-right" style="margin-top: 1rem">
+                    <v-col cols="5" class="text-right" style="margin-top: 1rem">
                         <v-spacer></v-spacer>
                         <v-btn color="error" small @click="confirmDeleteDialog = true">
                             Remove All
@@ -32,8 +37,6 @@
                             <v-data-table
                                 :headers="headers"
                                 :items="rooms"
-                                disable-pagination
-                                :hide-default-footer="true"
                             >
                                 <template v-slot:[`item.actions`]="{ item }">
                                     <v-icon small class="mr-2" @click="joinRoom(item.id)">
@@ -75,6 +78,9 @@
                     <AddRoom v-if="createDialog" @closeDialog="getFromChild" :createDialog="createDialog"/>
                 </v-row>
             </v-col>
+            <v-col cols="12">
+                {{pdfData}}
+            </v-col>
         </v-row>
     </v-card>
 </template>
@@ -99,7 +105,8 @@
                 createDialog: false,
                 confirmItemToBeDeletedDialog: false,
                 watcherActive: false,
-                loadedData: true
+                loadedData: true,
+                pdfData: ''
             }
         },
         methods: {
@@ -117,7 +124,7 @@
             },
             removeAllRooms() {
                 this.confirmDeleteDialog = false
-                RoomService.deleteAll()
+                RoomService.deleteAllRooms()
                     .then((response) => {
                         this.refreshList();
                     })
@@ -163,6 +170,17 @@
             getFromChild(value) {
                 this.createDialog = value
                 this.refreshList();
+            },
+            async generatePDF() {
+                const rooms = this.rooms
+                const pdfResult = await fetch('http://localhost:3001/generatePDF', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': "application/json",
+                    },
+                    body: JSON.stringify(rooms)
+                })
+                this.pdfData = await pdfResult.json()
             }
         },
         mounted() {

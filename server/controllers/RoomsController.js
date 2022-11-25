@@ -68,5 +68,21 @@ module.exports = {
         } catch (err) {
             console.log(err)
         }
-    }
+    },
+    
+    //Delete all rooms
+    async deleteAllRooms (req, res) {
+        await Room.deleteMany({})
+            .then(data => {
+                helpers.deleteAllChats()
+                return res.send({
+                    message: `${data.deletedCound} rooms were deleted successfully`
+                })
+            })
+            .catch(err => {
+                return res.status(500).send({
+                    message: err.message || "Some error occurred while removing all the rooms."
+                })
+            })
+    },
 }

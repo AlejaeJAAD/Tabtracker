@@ -4,17 +4,17 @@ const fetch = (...args) =>
 	import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 module.exports = {
-      async getAllSongs (req, res) {
-        try {
-          const songs = await Song.aggregate([{ $sample: { size: 5 } }])
-          return res.json({
-            songs
-          })
-        } catch (err) {
-          res.status(500).send({
-            error: 'an error has occured trying to fetch all the songs'
-          })
-        }
+    async getAllSongs (req, res) {
+      try {
+        const songs = await Song.aggregate([{ $sample: { size: 5 } }])
+        return res.json({
+          songs
+        })
+      } catch (err) {
+        res.status(500).send({
+          error: 'an error has occured trying to fetch all the songs'
+        })
+      }
     },
     async searchSong (req, res) {
       try{

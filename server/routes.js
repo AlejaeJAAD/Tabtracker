@@ -9,11 +9,22 @@ const requireRefreshToken = require('./middlewares/requireRefreshToken')
 
 //Links
 const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
-const {getRooms, getRoomById, createRoom, updateRoom, deleteRoom} = require('./controllers/RoomsController')
+
+//Rooms
+const {getRooms, getRoomById, createRoom, updateRoom, deleteRoom, deleteAllRooms} = require('./controllers/RoomsController')
+
+//Chats
 const {getChats, getChatById, createChat, updateChat, deleteChat} = require('./controllers/ChatController')
+
+//Tutorials
 const {postTutorial, getAllTutorials, getAllPublishedTutorials, getOneTutorial, getByTttle, updateOneTutorial, deleteOneTutorial, deleteAllTutorials} = require('./controllers/TutorialsController')
 
+//Customers
+const {newCustomer, getCustomers, getCustomerById, deleteAllCustomers, deleteCustomerById, updateCustomerById} = require('./controllers/CustomersController')
+
 const {getMusicData} = require('./controllers/MusicController')
+
+const {generatePDF} = require('./controllers/PDFController')
 
 module.exports = (app) => {
     // Register route
@@ -66,6 +77,7 @@ module.exports = (app) => {
     app.post('/rooms', createRoom)
     app.patch('/rooms/:id', updateRoom)
     app.delete('/rooms/:id', deleteRoom)
+    app.delete('/rooms', deleteAllRooms)
     app.get('/chats', getChats)
     app.get('/chats/:id', getChatById)
     app.post('/chats', createChat)
@@ -85,4 +97,15 @@ module.exports = (app) => {
     app.put('/tutorials/:id', updateOneTutorial)
     app.delete('/tutorials/:id', deleteOneTutorial)
     app.delete('/tutorials', deleteAllTutorials)
+
+    app.post('/generatePDF', generatePDF)
+
+    //Customers
+    app.post('/customers', newCustomer)
+    app.get('/customers', getCustomers)
+    app.get('/customers/:id', getCustomerById)
+    app.delete('/customers', deleteAllCustomers)
+    app.delete('/customers/:id', deleteCustomerById)
+    app.put('/customers/:id', updateCustomerById)
+    
 }
