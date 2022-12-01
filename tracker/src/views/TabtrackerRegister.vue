@@ -97,38 +97,21 @@
                         </v-col>
 
                         <!-- //BIRTHDAY -->
-                        <v-col cols="10" style="margin-bottom: -0.5rem">
-                            <v-menu
-                            dense
-                            solo
-                            ref="menu"
-                            v-model="menu"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="auto"
-                            >
+                        <v-col cols="10">
+                            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="user.birthDate" transition="scale-transition" offset-y min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                v-model="user.birthDate"
-                                :value="computedDateFormattedMomentjs"
-                                clearable
-                                label="Birthdate"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                                @click:clear="date = null"
-                                ></v-text-field>
+                                <v-text-field solo v-model="user.birthDate" label="BirthDate" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
                             </template>
-                            <v-date-picker
-                                elevation="4"
-                                color="rgba(74,52,212,255)"
-                                v-model="user.birthDate"
-                                :active-picker.sync="activePicker"
-                                :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-                                min="1950-01-01"
-                                @change="save"
-                            ></v-date-picker>
+                            <v-date-picker type="date" ref="inpfNacimiento" :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                                min="1950-01-01" v-model="user.birthDate" elevation="5" year-icon="mdi-calendar-blank" prev-icon="mdi-skip-previous" next-icon="mdi-skip-next" no-title scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn text color="primary" @click="menu = false">
+                                Cancel
+                                </v-btn>
+                                <v-btn text color="primary" @click="$refs.menu.save(user.birthDate)">
+                                OK
+                                </v-btn>
+                            </v-date-picker>
                             </v-menu>
                         </v-col>
 
@@ -364,6 +347,7 @@
                   min: v => v.length >= 6 || 'Min 6 characters',
                 },
                 show3: false,
+                date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
             }
         },
         watch: {
@@ -420,9 +404,6 @@
                 } catch (error) {
                     this.error = error.response.data.error
                 }
-            },
-            save (date) {
-                this.$refs.menu.save(date)
             },
         },
     }

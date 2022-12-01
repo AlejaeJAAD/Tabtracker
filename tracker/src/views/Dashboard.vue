@@ -3,7 +3,7 @@
         class="mx-auto overflow-hidden"
         height="100vh">
         <Nav />
-        <v-row>
+        <v-row style="margin-top: 2.5rem">
             <v-col v-if="loadedData">
                 <v-card>
                     <v-card-title>

@@ -17,11 +17,6 @@
                             Add Room
                         </v-btn>
                     </v-col>
-
-                    <v-col cols="5" class="text-right" style="margin-top: 1rem">
-                        <v-spacer></v-spacer>
-                        <v-btn color="success" @click="generatePDF">Generate PDF</v-btn>
-                    </v-col>
                     
                     <v-col cols="5" class="text-right" style="margin-top: 1rem">
                         <v-spacer></v-spacer>
@@ -78,9 +73,6 @@
                     <AddRoom v-if="createDialog" @closeDialog="getFromChild" :createDialog="createDialog"/>
                 </v-row>
             </v-col>
-            <v-col cols="12">
-                {{pdfData}}
-            </v-col>
         </v-row>
     </v-card>
 </template>
@@ -106,7 +98,6 @@
                 confirmItemToBeDeletedDialog: false,
                 watcherActive: false,
                 loadedData: true,
-                pdfData: ''
             }
         },
         methods: {
@@ -171,17 +162,6 @@
                 this.createDialog = value
                 this.refreshList();
             },
-            async generatePDF() {
-                const rooms = this.rooms
-                const pdfResult = await fetch('http://localhost:3001/generatePDF', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': "application/json",
-                    },
-                    body: JSON.stringify(rooms)
-                })
-                this.pdfData = await pdfResult.json()
-            }
         },
         mounted() {
             this.retrieveRooms();

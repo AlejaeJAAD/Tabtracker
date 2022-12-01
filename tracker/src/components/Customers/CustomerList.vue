@@ -1,8 +1,7 @@
 <template>
-    <v-card class="mx-auto overflow-hidden"
-        height="auto">
+    <v-card class="mx-auto overflow-hidden" height="100%">
         <Nav />
-        <v-row>
+        <v-row style="margin-top: 2.5rem">
             <v-col cols="12" v-if="loadedData">
                 <v-card>
                     <v-card-title>
@@ -10,63 +9,69 @@
                     </v-card-title>
                 </v-card>
             </v-col>
-            <v-col cols="12" v-else class="pa-15">
-                <v-row>
-                    <v-col cols="6" sm="6" style="margin-top: 1.4.rem">
-                        <v-text-field v-model="company_name" label="Search by company name"></v-text-field>
-                    </v-col>
-                    
-                    <v-col cols="3">
-                        <v-btn block outlined color="primary" small @click="searchCompanyName">
-                            Search
-                        </v-btn>
-                    </v-col>
-                    <v-col cols="3">
-                        <v-btn block outlined color="error" small @click="resetCustomers">
-                            Reset search
-                        </v-btn>
-                    </v-col>
-                    <v-col cols="2" style="margin-top: -1rem">
-                        <v-btn color="success" small @click="confirmCreateDialog = true">
-                            Add Customer
-                        </v-btn>
-                    </v-col>
-                    
-                    <v-col cols="12" sm="12">
-                        <v-row>
-                            <v-col cols="4" sm="3">
-                                <v-select
-                                    v-model="pageSize"
-                                    :items="pageSizes"
-                                    label="Customers per page"
-                                    @change="handlePageSizeChange"
-                                >
-                                </v-select>
-                            </v-col>
-            
-                            <v-col cols="12" sm="9">
-                                <v-pagination
-                                    v-model="page"
-                                    :length="totalPages"
-                                    total-visible="7"
-                                    next-icon="mdi-menu-right"
-                                    prev-icon="mdi-menu-left"
-                                    @input="handlePageChange"
-                                >
-                                </v-pagination>
-                            </v-col>
-            
-                            <v-col cols="12" class="text-right" style="margin-top: -2rem">
-                                <v-spacer></v-spacer>
-                                <v-btn color="error" small @click="confirmDeleteDialog = true">
-                                    Remove All
-                                </v-btn>
-                            </v-col>
-                        </v-row>
+            <v-col cols="12" v-else>
+                <v-row class="pr-15 pl-15">
+                    <v-col cols="12">
+                        <v-card class="cardStyle">
+                            <v-row>
+                                <v-col cols="6" sm="6">
+                                    <v-text-field v-model="company_name" label="Search by company name"></v-text-field>
+                                </v-col>
+                                
+                                <v-col cols="3" class="pt-9">
+                                    <v-btn block outlined color="primary" small @click="searchCompanyName">
+                                        Search
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="3" class="pt-9">
+                                    <v-btn block outlined color="error" small @click="resetCustomers">
+                                        Reset search
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="2" style="margin-top: -1rem">
+                                    <v-btn block outlined color="success" small @click="confirmCreateDialog = true">
+                                        Add Customer
+                                    </v-btn>
+                                </v-col>
+                                
+                                <v-col cols="12" sm="12">
+                                    <v-row>
+                                        <v-col cols="4" sm="3">
+                                            <v-select
+                                                v-model="pageSize"
+                                                :items="pageSizes"
+                                                label="Customers per page"
+                                                @change="handlePageSizeChange"
+                                            >
+                                            </v-select>
+                                        </v-col>
+                        
+                                        <v-col cols="12" sm="9">
+                                            <v-pagination
+                                                v-model="page"
+                                                :length="totalPages"
+                                                total-visible="7"
+                                                next-icon="mdi-menu-right"
+                                                prev-icon="mdi-menu-left"
+                                                @input="handlePageChange"
+                                            >
+                                            </v-pagination>
+                                        </v-col>
+                        
+                                        <v-col cols="12" class="text-right" style="margin-top: -2rem">
+                                            <v-spacer></v-spacer>
+                                            <v-btn outlined color="error" small @click="confirmDeleteDialog = true">
+                                                Remove All
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                        </v-card>
                     </v-col>
                     
                     <v-col cols="12" sm="12" style="padding-bottom: 3rem">
-                        <v-card class="mx-auto" tile elevation="4" flat color="transparent">
+                        <v-card class="mx-auto pa-5 cardStyle" tile>
                             <v-card-title>Customers</v-card-title>
                             
                             <v-data-table
@@ -76,20 +81,32 @@
                                 disable-pagination
                                 :hide-default-footer="true"
                             >
-                                <template v-slot:[`item.actions`]="{ item }">
-                                    <v-icon small class="mr-2" @click="editCustomer(item.id)">
-                                    mdi-pencil
-                                    </v-icon>
-                                    <v-icon small @click="idOfItemToBeDeleted = item._d; titleOfItemToBeDeleted = item.company_name; confirmItemToBeDeletedDialog = true">
-                                    mdi-delete
-                                    </v-icon>
+                                <template v-slot:[`item.edit`]="{ item }">
+                                    <v-btn 
+                                        small color="orange" outlined
+                                        @click="editCustomer(item.id)">
+                                        <v-icon>
+                                            mdi-account-edit
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <template v-slot:[`item.delete`]="{ item }">
+                                    <v-btn 
+                                        small color="red" outlined
+                                        @click="idOfItemToBeDeleted = item.id;
+                                                titleOfItemToBeDeleted = item.company_name;
+                                                confirmItemToBeDeletedDialog = true">
+                                        <v-icon>
+                                            mdi-account-remove
+                                        </v-icon>
+                                    </v-btn>
                                 </template>
                             </v-data-table>
                         </v-card>
                     </v-col>
             
                     <v-dialog width="auto" v-model="confirmDeleteDialog">
-                        <v-card>
+                        <v-card class="pa-4">
                             <v-card-title>Are you sure you want to delet all the customers?</v-card-title>
                             <v-card-actions class="justify-center">
                                 <v-btn color="success" @click="removeAllCustomers">Yes</v-btn>
@@ -126,13 +143,18 @@
                 customers: [],
                 company_name: "",
                 headers: [
-                    { text: "Company Name", align: "start", sortable: true, value: "company_name" },
-                    { text: "Actions", value: "actions", sortable: false },
+                    { text: "Enrollment", sortable: false, value: "enrollment"},
+                    { text: "Company Name", sortable: true, value: "company_name" },
+                    { text: "Contact Name", sortable: true, value: "contact_name" },
+                    { text: "Phone", sortable: false, value: "phone" },
+                    { text: "Email", sortable: true, value: "email" },
+                    { text: "Edit", value: "edit", sortable: false },
+                    { text: "Delete", value: "delete", sortable: false },
                 ],
                 page: 1,
                 totalPages: 0,
                 pageSize: 5,
-                pageSizes: [5, 10],
+                pageSizes: [5,10,15],
                 idOfItemToBeDeleted: '',
                 titleOfItemToBeDeleted: '',
                 confirmDeleteDialog: false,
@@ -164,7 +186,7 @@
                 const params = this.getRequestParams(
                     this.title = '',
                     this.page = 1,
-                    this.pageSize = 5
+                    this.pageSize = 3
                 )
 
                 CustomerService.getAllCustomers(params)
@@ -225,6 +247,7 @@
                 });
             },
             editCustomer(id) {
+                console.log(id)
                 this.$router.push({ name: "CustomerDetails", params: { id: id } });
             },
             deleteCustomer() {
@@ -261,8 +284,13 @@
             },
             getDisplayCustomer(customer) {
                 return {
-                    id: customer._id,
-                    company_name: customer.company_name.length > 40 ? customer.company_name.substr(0, 30) + "..." : customer.company_name,
+                    id: customer.id,
+                    enrollment: customer.enrollment,
+                    contact_name: customer.contact_name,
+                    phone: customer.phone,
+                    email: customer.email,
+                    company_name:
+                        customer.company_name.length > 40 ? customer.company_name.substr(0, 30) + "..." : customer.company_name,
                 };
             },
             handlePageChange(value) {
@@ -289,5 +317,11 @@
 <style lang="scss" scoped>
 .v-card__actions {
     display: inline; 
+}
+.cardStyle {
+    padding: 1rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.289);
 }
 </style>

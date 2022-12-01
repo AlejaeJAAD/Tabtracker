@@ -1,9 +1,9 @@
 <template>
-  <v-card>
+  <v-card style="padding: 10px">
       <v-app-bar
-          color="dark" tile>
+          color="dark" tile dense>
           <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-          <v-toolbar-title>Dashboard</v-toolbar-title>
+          <v-toolbar-title>J.A.A.D</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-tooltip v-if="!$vuetify.theme.dark" bottom>
               <template v-slot:activator="{ on }">
@@ -120,7 +120,7 @@
               {
                 title: "Customers",
                 icon: "mdi-account-group",
-                to: "/customers",
+                to: "/customerList",
                 hovered: false
               },
             );

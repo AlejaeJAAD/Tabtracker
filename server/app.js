@@ -13,13 +13,14 @@ mongoose.connect(uri,
 .then(() => console.log('DB Connected'))
 .catch(e => console.log('error db:', e))
 
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2]
 
 const app = express()
 
 const http = require('http').createServer(app)
 const io = require('socket.io')(http, {
     cors: {
-      origins: ['http://localhost:8080']
+      origins: ['http://localhost:8080', 'http://localhost:8081']
     }
 })
 
@@ -50,8 +51,6 @@ io.on('connection', function (socket) {
       io.emit('new-message', { message: data })
     })
 })
-
-const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2]
 
 app.use(
     cors({

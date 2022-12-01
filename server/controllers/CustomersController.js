@@ -83,12 +83,10 @@ module.exports = {
                password: password
             })
    
-            await customer.save()
+            const newUser = await customer.save()
+            newUser.password = undefined
    
-            const { token, expiresIn } = generateToken(customer._id)
-            generateRefreshToken(customer._id, res)
-   
-            return res.status(201).json({ token, expiresIn })
+            return res.status(201).json( newUser )
         } catch (err) {
             if (err.code == 11000) {
                 return res.status(400).json({
@@ -138,8 +136,19 @@ module.exports = {
         console.log('Hi')
     },
 
+    //Delete all customers
     async deleteAllCustomers (req, res) {
-        console.log('Hi')
+        await Customer.deleteMany({})
+            .then(data => {
+                res.send({
+                    message: `${data.deletedCound} customers were deleted successfully`
+                })
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while removing all the customers."
+                })
+            })
     },
 
     async deleteCustomerById (req, res) {
