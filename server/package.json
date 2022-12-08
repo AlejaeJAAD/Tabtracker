@@ -32,6 +32,7 @@
     "multer-gridfs-storage": "^5.0.2",
     "nanoid": "^3.3.4",
     "node-fetch": "^2.6.7",
+    "nodemailer": "^6.8.0",
     "pdfkit": "^0.13.0",
     "python-shell": "^3.0.1",
     "sequelize": "^6.22.0",

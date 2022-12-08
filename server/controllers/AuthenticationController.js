@@ -1,11 +1,13 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken')
 const generateRefreshToken = require('../utils/generateRefreshToken')
+const generateRecoverPasswordToken = require('../utils/generateRecoverPasswordToken')
 
 const bcrypt = require('bcrypt');
-
-// validation
 const Joi = require('@hapi/joi');
+const nodemailer = require("nodemailer")
+
+// const transporter = require('../config/mailer')
 
 const schemaRegister = Joi.object({
   fileURL: Joi.string().min(4).max(255).required(),
@@ -133,7 +135,6 @@ module.exports = {
           token, expiresIn
         })
       } catch (error) {
-          console.log(error);
           return res.status(500).json({ error: "Some error with the server" });
       }
     },
@@ -168,65 +169,87 @@ module.exports = {
       return res.json({ ok: true });
     },
     async forgotPassword(req, res) {
-      const nickname = req.body.nickName
-      if (!nickname) {
+      const nickName = req.body.nickName
+      
+      if (!nickName) {
         return res.status(400).json({
           message: 'Nickname is required'
         })
       }
 
+      const user = await User.findOne({
+        nickName: nickName
+      })
+      
+      const { token } = generateRecoverPasswordToken(user._id, nickName)
       const message = 'Check your email for a link to reset your password'
-      let verificationLink
+      let verificationLink = `http://localhost:3001/new-password/${token}`
       let emailStatus = 'OK'
 
       try {
-        //const user = await User.find({ nickname: { $ne: null } })
-
-        const user = await User.findOne({ nickName: nickname })
         if(!user) {
-          res.json({
-            message: `User coulnd't be find in the database`
+          return res.json({
+            message: `We couldn't found an user registered with that nickname`
           })
         } else {
-          res.json({
-            message,
-            info: emailStatus
+          // const info = await transporter.sendMail({
+          //   from: '"Forgot Password 👻" <alejandroanayadommega@gmail.com>', // sender address
+          //   to: user.email,
+          //   subject: "Forgot password",
+          //   html: `
+          //     <b>Please click on the following link, or paste this into your browser to complete the process.</b>
+          //     <a href="${verificationLink}">${verificationLink}</a>
+          //   `
+          // })
+          const client = nodemailer.createTransport({
+            name: 'example.com',
+            service: "Gmail",
+            auth: {
+              user: process.env.GOOGLE_JAAD_APP_EMAIL,
+              pass: process.env.GOOGLE_JAAD_APP_PASS,
+            },
+            tls:{rejectUnauthorized:false}
           })
+        
+          const info = await client.sendMail(
+            {
+              from: 'JAAD',
+              to: user.email,
+              subject: "Forgot password",
+              html: `
+              <html>
+                <b>Please click on the following link, or paste this into your browser to complete the process.</b>
+                <a href="${verificationLink}">${verificationLink}</a>
+              </html>
+              `
+            }
+          )
+          console.log("Message sent: %s", info.accepted);
         }
-
-        // const token = generateToken(user._id)
-        // verificationLink = `http://localhost:3001/new-password${token}`
       } catch (error) {
-        return res.json({
+        return res.status(400).json({
+          message: 'Something went wrong',
           error
         })
       }
 
-      //SEND EMAIL
       // try {
-      //   console.log('EMAIL')
+      //   await User.save(user)
       // } catch (error) {
-      //   emailStatus = error
-      //   return res.status(400).json({
-      //     message: 'Something went wrong'
-      //   })
+      //     emailStatus = error
+      //     return res.status(400).json({
+      //       message: 'Something went wrong'
+      //     })
       // }
-
-
-      try {
-        //await User.save(user)
-      } catch (error) {
-          emailStatus = error
-          return res.status(400).json({
-            message: 'Something went wrrong'
-          })
-      }
-
+      res.json({
+        message,
+        info: emailStatus,
+        test: verificationLink
+      })
     },
     async createNewPassword(req, res) {
       const newPassword = req.body.newPassword
       const user = await User.findOne({ email: req.body.email })
-      console.log(user.password, 'PASS')
 
       const validPassword = await bcrypt.compare(req.body.password, user.password);
       if (!validPassword) return res.status(401).send({
