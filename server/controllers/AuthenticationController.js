@@ -5,9 +5,8 @@ const generateRecoverPasswordToken = require('../utils/generateRecoverPasswordTo
 
 const bcrypt = require('bcrypt');
 const Joi = require('@hapi/joi');
-const nodemailer = require("nodemailer")
 
-// const transporter = require('../config/mailer')
+const transporter = require('../config/mailer')
 
 const schemaRegister = Joi.object({
   fileURL: Joi.string().min(4).max(255).required(),
@@ -178,73 +177,73 @@ module.exports = {
       }
 
       const user = await User.findOne({
-        nickName: nickName
-      })
-      
-      const { token } = generateRecoverPasswordToken(user._id, nickName)
-      const message = 'Check your email for a link to reset your password'
-      let verificationLink = `http://localhost:3001/new-password/${token}`
-      let emailStatus = 'OK'
-
-      try {
-        if(!user) {
-          return res.json({
-            message: `We couldn't found an user registered with that nickname`
+          nickName: nickName
+        }, function (err, result) {
+        if (err) { 
+          console.log(err)
+          }
+        if (!result) {
+          return res.status(404).json({
+            message: `We couldn't find a registered user with that nickname`
           })
-        } else {
-          // const info = await transporter.sendMail({
-          //   from: '"Forgot Password 👻" <alejandroanayadommega@gmail.com>', // sender address
-          //   to: user.email,
-          //   subject: "Forgot password",
-          //   html: `
-          //     <b>Please click on the following link, or paste this into your browser to complete the process.</b>
-          //     <a href="${verificationLink}">${verificationLink}</a>
-          //   `
-          // })
-          const client = nodemailer.createTransport({
-            name: 'example.com',
-            service: "Gmail",
-            auth: {
-              user: process.env.GOOGLE_JAAD_APP_EMAIL,
-              pass: process.env.GOOGLE_JAAD_APP_PASS,
-            },
-            tls:{rejectUnauthorized:false}
-          })
-        
-          const info = await client.sendMail(
-            {
-              from: 'JAAD',
-              to: user.email,
-              subject: "Forgot password",
-              html: `
-              <html>
-                <b>Please click on the following link, or paste this into your browser to complete the process.</b>
-                <a href="${verificationLink}">${verificationLink}</a>
-              </html>
-              `
-            }
-          )
-          console.log("Message sent: %s", info.accepted);
         }
-      } catch (error) {
-        return res.status(400).json({
-          message: 'Something went wrong',
-          error
+      }).clone().catch(function(err){ console.log(err)})
+      
+      if (user) {
+        const { token } = generateRecoverPasswordToken(user._id, nickName)
+        const message = 'Check your email for a link to reset your password'
+        let verificationLink = `http://localhost:8080/forgot-password/${token}`
+        let emailStatus = 'OK'
+  
+        try {
+          const info = await transporter.sendMail({
+            from: '"Forgot Password 👻" <alejandroanayadommega@gmail.com>',
+            to: user.email,
+            subject: "Reset password",
+            html: `
+            <html>
+              <b>Please click on the following link, or paste this into your browser to complete the process.</b>
+              <a href="${verificationLink}">${verificationLink}</a>
+            </html>
+            `
+          })
+          
+          console.log("Message sent: %s", info.accepted);
+  
+          return res.status(200).json({
+            message,
+            info: emailStatus,
+            test: verificationLink
+          })
+  
+        } catch (error) {
+          return res.status(400).json({
+            message: 'Something went wrong',
+            error: error
+          })
+        }
+      }
+    },
+    async confirmRecoverPasswordEmail(req, res) {
+      const newPassword = req.body.newPassword
+      const user = await User.findOne({ email: req.body.email })
+
+      if (!user) {
+        return res.status(404).send({
+          error: `
+              ¡USER NOT FOUND! <br>
+            `
         })
       }
 
-      // try {
-      //   await User.save(user)
-      // } catch (error) {
-      //     emailStatus = error
-      //     return res.status(400).json({
-      //       message: 'Something went wrong'
-      //     })
-      // }
-      res.json({
-        message,
-        info: emailStatus,
-        test: verificationLink
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(newPassword, salt);
+      user.password = password
+
+      await user.save()
+
+      return res.status(201).json({
+        message: 'User password has been changed successfully!' 
       })
     },
     async createNewPassword(req, res) {

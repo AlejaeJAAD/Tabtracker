@@ -29,6 +29,9 @@ import AddTutorial from '@/components/Tutorials/AddTutorial'
 import CustomerList from '@/components/Customers/CustomerList'
 import EditCustomer from '@/components/Customers/EditCustomer'
 
+import ForgotPasswordConfirm from '@/views/ForgotPasswordConfirm'
+import ForgotPassword from '@/views/ForgotPassword'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -144,6 +147,16 @@ const routes = [
     path: '/customers/:id',
     name: 'CustomerDetails',
     component: EditCustomer,
+  },
+  {
+    path: '/forgot-password/confirm/:token',
+    name: 'ForgotPasswordConfirm',
+    component: ForgotPasswordConfirm
+  },
+  {
+    path: '/forgot-password/:token',
+    name: 'ForgotPassword',
+    component: ForgotPassword
   },
 ]
 

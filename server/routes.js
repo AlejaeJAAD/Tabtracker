@@ -6,6 +6,7 @@ const YTDownloaderController = require('./controllers/YTDownloaderController')
 //Validate token
 const requireToken = require('./middlewares/requireToken')
 const requireRefreshToken = require('./middlewares/requireRefreshToken')
+const restorePasswordToken = require('./middlewares/restorePasswordToken')
 
 //Links
 const {getLinks, createLink, removeLink, updateLink, getNanoLink } = require('./controllers/LinksController')
@@ -34,7 +35,9 @@ module.exports = (app) => {
     // Logout route
     app.get('/logout', AC.logout)
     // Forgot password
-    app.put('/forgot-password', requireToken, AC.forgotPassword)
+    app.put('/forgot-password', AC.forgotPassword)
+    //Confirm email (recover password)
+    app.put('/confirm-recover-password-email', restorePasswordToken, AC.confirmRecoverPasswordEmail)
     // Create new password
     app.put('/new-password', requireToken, AC.createNewPassword)
     // Refresh token route

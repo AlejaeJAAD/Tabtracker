@@ -1,15 +1,15 @@
 const nodemailer = require("nodemailer")
 
 const transporter = nodemailer.createTransport({
-    // host: "smtp.gmail.com",
-    // port: 465,
-    // secure: true,
-    service:'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    // service:'gmail',
     auth: {
       user: process.env.GOOGLE_JAAD_APP_EMAIL,
       pass: process.env.GOOGLE_JAAD_APP_PASS,
     },
-    tls:{rejectUnauthorized:false}
+    // tls:{rejectUnauthorized:false}
 })
 
 transporter.verify().then(() => {

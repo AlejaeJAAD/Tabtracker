@@ -135,31 +135,31 @@
                             newPassword: this.newPassword
                         }
 
-                        // const resToken = await fetch('http://localhost:3001/refresh-token', {
-                        // method: 'GET',
-                        // credentials: "include"
-                        // })
+                        const resToken = await fetch('http://localhost:3001/refresh-token', {
+                        method: 'GET',
+                        credentials: "include"
+                        })
     
-                        // const {token} = await resToken.json()
+                        const {token} = await resToken.json()
     
-                        // await fetch('http://localhost:3001/new-password', {
-                        //     method: 'PUT',
-                        //     headers: {
-                        //         'Content-Type': 'application/json',
-                        //         Authorization: "Bearer " + token,
-                        //     },
-                        //     credentials: 'include',
-                        //     body: JSON.stringify(data)
-                        // })
+                        await fetch('http://localhost:3001/new-password', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: "Bearer " + token,
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify(data)
+                        })
     
-                        // this.dialog = true
+                        this.dialog = true
     
-                        // setTimeout(() => {
-                        //     this.progress = false
-                        //     this.$router.push({
-                        //         name: 'dashboard'
-                        //     })
-                        // }, 1500)
+                        setTimeout(() => {
+                            this.progress = false
+                            this.$router.push({
+                                name: 'dashboard'
+                            })
+                        }, 1500)
                         console.log('entro')
                     } else if ((this.oldPassword || this.newPassword || this.confirmPassword) == '') {
                         this.error = 'Old Password cannot be empty, New Password cannot be empty, Confirm Password cannot be empty'
